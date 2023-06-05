@@ -159,23 +159,6 @@ mod tests {
     }
 
     #[test]
-    fn addition() {
-        let m1: Matrix<_, 2, 5> = Matrix::new(vec![5u32; 10]);
-        let m2: Matrix<_, 2, 5> = Matrix::new(vec![2u32; 10]);
-
-        let expected = Matrix::new(vec![7u32; 10]);
-        let actual = m1 + m2;
-        assert_eq!(expected, actual);
-
-        let mut m1: Matrix<_, 3, 7> = Matrix::new(vec![9i32; 21]);
-        let m2: Matrix<_, 3, 7> = Matrix::new(vec![1i32; 21]);
-
-        let expected = Matrix::new(vec![10i32; 21]);
-        m1 += m2;
-        assert_eq!(expected, m1);
-    }
-
-    #[test]
     fn iter_row() {
         let m: Matrix<_, 5, 3> = Matrix::new(
             vec![0u32; 15]
@@ -211,5 +194,22 @@ mod tests {
         assert_eq!(iter.next(), Some(&14));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
+    }
+
+    #[test]
+    fn addition() {
+        let m1: Matrix<_, 2, 5> = Matrix::new(vec![5u32; 10]);
+        let m2: Matrix<_, 2, 5> = Matrix::new(vec![2u32; 10]);
+
+        let expected = Matrix::new(vec![7u32; 10]);
+        let actual = m1 + m2;
+        assert_eq!(expected, actual);
+
+        let mut m1: Matrix<_, 3, 7> = Matrix::new(vec![9i32; 21]);
+        let m2: Matrix<_, 3, 7> = Matrix::new(vec![1i32; 21]);
+
+        let expected = Matrix::new(vec![10i32; 21]);
+        m1 += m2;
+        assert_eq!(expected, m1);
     }
 }
