@@ -7,7 +7,12 @@ pub struct Matrix<T, const ROWS: usize, const COLS: usize> {
 
 impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
     pub fn new(entries: Vec<T>) -> Self {
-        // TODO: error if entries.len != ROWS*COLS
+        // TODO: Consider an `Error` type that could be returned via `Result`
+        assert_eq!(
+            entries.len(),
+            ROWS * COLS,
+            "given `entries` do not match matrix size"
+        );
 
         Self { entries }
     }
@@ -61,6 +66,12 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    #[should_panic(expected = "given `entries` do not match matrix size")]
+    fn instantiation() {
+        Matrix::<_, 2, 3>::new(vec![0u32, 2]);
+    }
 
     #[test]
     fn addition() {
