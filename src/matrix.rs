@@ -25,7 +25,7 @@ impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
         ROWS == 1
     }
 
-    pub const fn is_column(&self) -> bool {
+    pub const fn is_col(&self) -> bool {
         COLS == 1
     }
 
