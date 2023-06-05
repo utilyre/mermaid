@@ -32,6 +32,10 @@ impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
     pub const fn is_square(&self) -> bool {
         ROWS == COLS
     }
+
+    pub fn get(&self, i: usize, j: usize) -> Option<&T> {
+        self.entries.get(COLS * i + j)
+    }
 }
 
 impl<T, const ROWS: usize, const COLS: usize> PartialEq for Matrix<T, ROWS, COLS>
