@@ -11,6 +11,22 @@ impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
     pub fn with_vec(entries: Vec<T>) -> Self {
         Self::new(entries.into_boxed_slice())
     }
+
+    pub const fn is_empty(&self) -> bool {
+        ROWS == 0 || COLS == 0
+    }
+
+    pub const fn is_row(&self) -> bool {
+        ROWS == 1
+    }
+
+    pub const fn is_column(&self) -> bool {
+        COLS == 1
+    }
+
+    pub const fn is_square(&self) -> bool {
+        ROWS == COLS
+    }
 }
 
 #[cfg(test)]
