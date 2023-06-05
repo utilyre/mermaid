@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 #[derive(Debug, Eq)]
 pub struct Matrix<T, const ROWS: usize, const COLS: usize> {
@@ -63,6 +63,20 @@ where
     }
 }
 
+impl<T, const ROWS: usize, const COLS: usize> AddAssign for Matrix<T, ROWS, COLS>
+where
+    T: AddAssign,
+{
+    fn add_assign(&mut self, rhs: Self) {
+        self.entries
+            .iter_mut()
+            .zip(rhs.entries.into_iter())
+            .for_each(|(a, b)| {
+                *a += b;
+            });
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -80,7 +94,13 @@ mod tests {
 
         let expected = Matrix::new(vec![7u32; 10]);
         let actual = m1 + m2;
-
         assert_eq!(expected, actual);
+
+        let mut m1: Matrix<_, 3, 7> = Matrix::new(vec![9i32; 21]);
+        let m2: Matrix<_, 3, 7> = Matrix::new(vec![1i32; 21]);
+
+        let expected = Matrix::new(vec![10i32; 21]);
+        m1 += m2;
+        assert_eq!(expected, m1);
     }
 }
