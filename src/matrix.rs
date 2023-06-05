@@ -1,15 +1,15 @@
-#[derive(Debug)]
+use std::ops::Add;
+
+#[derive(Debug, Eq)]
 pub struct Matrix<T, const ROWS: usize, const COLS: usize> {
-    entries: Box<[T]>,
+    entries: Vec<T>,
 }
 
 impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
-    pub fn new(entries: Box<[T]>) -> Self {
-        Self { entries }
-    }
+    pub fn new(entries: Vec<T>) -> Self {
+        // TODO: error if entries.len != ROWS*COLS
 
-    pub fn with_vec(entries: Vec<T>) -> Self {
-        Self::new(entries.into_boxed_slice())
+        Self { entries }
     }
 
     pub const fn is_empty(&self) -> bool {
@@ -29,14 +29,47 @@ impl<T, const ROWS: usize, const COLS: usize> Matrix<T, ROWS, COLS> {
     }
 }
 
+impl<T, const ROWS: usize, const COLS: usize> PartialEq for Matrix<T, ROWS, COLS>
+where
+    T: PartialEq,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.entries
+            .iter()
+            .zip(other.entries.iter())
+            .all(|(a, b)| a == b)
+    }
+}
+
+impl<T, const ROWS: usize, const COLS: usize> Add for Matrix<T, ROWS, COLS>
+where
+    T: Add<Output = T>,
+{
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self::new(
+            self.entries
+                .into_iter()
+                .zip(rhs.entries.into_iter())
+                .map(|(a, b)| a + b)
+                .collect(),
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn basics() {
-        let m1: Matrix<_, 2, 5> = Matrix::new(Box::new([0u32; 10]));
-        let m2: Matrix<_, 5, 2> = Matrix::with_vec(vec![0u32; 10]);
-        assert_eq!(m1.entries, m2.entries);
+    fn addition() {
+        let m1: Matrix<_, 2, 5> = Matrix::new(vec![5u32; 10]);
+        let m2: Matrix<_, 2, 5> = Matrix::new(vec![2u32; 10]);
+
+        let expected = Matrix::new(vec![7u32; 10]);
+        let actual = m1 + m2;
+
+        assert_eq!(expected, actual);
     }
 }
