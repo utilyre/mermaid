@@ -59,36 +59,39 @@ impl<'e, T, const M: usize, const N: usize> Iterator for ColIter<'e, T, M, N> {
 #[cfg(test)]
 mod tests {
     use super::super::Matrix;
+    use std::error::Error;
 
     #[test]
-    fn iter_row() {
+    fn iter_row() -> Result<(), Box<dyn Error>> {
         let m: Matrix<_, 5, 3> = Matrix::new(
             vec![0u32; 15]
                 .into_iter()
                 .enumerate()
                 .map(|(i, _)| i + 1)
                 .collect(),
-        );
+        )?;
 
-        let mut iter = m.iter_row(2).unwrap();
+        let mut iter = m.iter_row(2).expect("row exists");
         assert_eq!(iter.next(), Some(&7));
         assert_eq!(iter.next(), Some(&8));
         assert_eq!(iter.next(), Some(&9));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
+
+        Ok(())
     }
 
     #[test]
-    fn iter_col() {
+    fn iter_col() -> Result<(), Box<dyn Error>> {
         let m: Matrix<_, 5, 3> = Matrix::new(
             vec![0u32; 15]
                 .into_iter()
                 .enumerate()
                 .map(|(i, _)| i + 1)
                 .collect(),
-        );
+        )?;
 
-        let mut iter = m.iter_col(1).unwrap();
+        let mut iter = m.iter_col(1).expect("col exists");
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&5));
         assert_eq!(iter.next(), Some(&8));
@@ -96,5 +99,7 @@ mod tests {
         assert_eq!(iter.next(), Some(&14));
         assert_eq!(iter.next(), None);
         assert_eq!(iter.next(), None);
+
+        Ok(())
     }
 }

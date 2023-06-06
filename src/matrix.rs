@@ -1,7 +1,8 @@
 pub mod iter;
 pub mod ops;
 
-use self::iter::{ColIter, RowIter};
+use crate::error::{Error, Result};
+use iter::{ColIter, RowIter};
 
 // TODO: implement Debug manually
 #[derive(Debug, Eq)]
@@ -10,15 +11,16 @@ pub struct Matrix<T, const M: usize, const N: usize> {
 }
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
-    pub fn new(entries: Vec<T>) -> Self {
-        // TODO: Consider an `Error` type that could be returned via `Result`
-        assert_eq!(
-            entries.len(),
-            M * N,
-            "given `entries` do not match matrix size"
-        );
+    pub fn new(entries: Vec<T>) -> Result<Self> {
+        if entries.len() != M * N {
+            return Err(Error::WrongEntriesLength {
+                rows: M,
+                cols: N,
+                len: entries.len(),
+            });
+        }
 
-        Self { entries }
+        Ok(Self { entries })
     }
 
     pub const fn is_empty(&self) -> bool {
@@ -67,8 +69,10 @@ mod tests {
     use super::*;
 
     #[test]
-    #[should_panic(expected = "given `entries` do not match matrix size")]
+    #[should_panic = "entry array of size `2` does not match matrix of size `2x3`"]
     fn instantiation() {
-        Matrix::<_, 2, 3>::new(vec![0u32, 2]);
+        if let Err(err) = Matrix::<_, 2, 3>::new(vec![0u32, 2]) {
+            panic!("{}", err);
+        }
     }
 }
