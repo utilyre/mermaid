@@ -4,8 +4,7 @@ pub mod ops;
 use crate::error::{Error, Result};
 use iter::{ColIter, RowIter};
 
-// TODO: implement Debug manually
-#[derive(Debug, Eq)]
+#[derive(Debug)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     entries: Vec<T>,
 }
@@ -51,6 +50,8 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         (j < N).then_some(ColIter::new(&self.entries, j))
     }
 }
+
+impl<T, const M: usize, const N: usize> Eq for Matrix<T, M, N> where T: Eq {}
 
 impl<T, const M: usize, const N: usize> PartialEq for Matrix<T, M, N>
 where
