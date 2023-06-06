@@ -1,7 +1,7 @@
 use super::Matrix;
 use std::ops::{Add, AddAssign};
 
-impl<T, const ROWS: usize, const COLS: usize> Add for Matrix<T, ROWS, COLS>
+impl<T, const M: usize, const N: usize> Add for Matrix<T, M, N>
 where
     T: Add<Output = T>,
 {
@@ -18,7 +18,7 @@ where
     }
 }
 
-impl<T, const ROWS: usize, const COLS: usize> AddAssign for Matrix<T, ROWS, COLS>
+impl<T, const M: usize, const N: usize> AddAssign for Matrix<T, M, N>
 where
     T: AddAssign,
 {

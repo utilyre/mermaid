@@ -1,21 +1,21 @@
-pub struct RowIter<'a, T, const COLS: usize> {
-    entries: &'a [T],
+pub struct RowIter<'e, T, const N: usize> {
+    entries: &'e [T],
     index: usize,
     end: usize,
 }
 
-impl<'a, T, const COLS: usize> RowIter<'a, T, COLS> {
-    pub(super) fn new(entries: &'a [T], i: usize) -> Self {
+impl<'e, T, const N: usize> RowIter<'e, T, N> {
+    pub(super) fn new(entries: &'e [T], i: usize) -> Self {
         Self {
             entries,
-            index: COLS * i,
-            end: COLS * (i + 1) - 1,
+            index: N * i,
+            end: N * (i + 1) - 1,
         }
     }
 }
 
-impl<'a, T, const COLS: usize> Iterator for RowIter<'a, T, COLS> {
-    type Item = &'a T;
+impl<'e, T, const N: usize> Iterator for RowIter<'e, T, N> {
+    type Item = &'e T;
 
     fn next(&mut self) -> Option<Self::Item> {
         (self.index <= self.end).then(|| {
@@ -27,29 +27,29 @@ impl<'a, T, const COLS: usize> Iterator for RowIter<'a, T, COLS> {
     }
 }
 
-pub struct ColIter<'a, T, const ROWS: usize, const COLS: usize> {
-    entries: &'a [T],
+pub struct ColIter<'e, T, const M: usize, const N: usize> {
+    entries: &'e [T],
     index: usize,
     end: usize,
 }
 
-impl<'a, T, const ROWS: usize, const COLS: usize> ColIter<'a, T, ROWS, COLS> {
-    pub(super) fn new(entries: &'a [T], j: usize) -> Self {
+impl<'e, T, const M: usize, const N: usize> ColIter<'e, T, M, N> {
+    pub(super) fn new(entries: &'e [T], j: usize) -> Self {
         Self {
             entries,
             index: j,
-            end: (ROWS - 1) * COLS + j,
+            end: (M - 1) * N + j,
         }
     }
 }
 
-impl<'a, T, const ROWS: usize, const COLS: usize> Iterator for ColIter<'a, T, ROWS, COLS> {
-    type Item = &'a T;
+impl<'e, T, const M: usize, const N: usize> Iterator for ColIter<'e, T, M, N> {
+    type Item = &'e T;
 
     fn next(&mut self) -> Option<Self::Item> {
         (self.index <= self.end).then(|| {
             let idx = self.index;
-            self.index += COLS;
+            self.index += N;
 
             &self.entries[idx]
         })
