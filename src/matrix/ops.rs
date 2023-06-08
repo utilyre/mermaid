@@ -9,9 +9,9 @@ where
 
     fn add(self, rhs: Self) -> Self::Output {
         Self::new(
-            self.entries
+            self.0
                 .into_iter()
-                .zip(rhs.entries.into_iter())
+                .zip(rhs.0.into_iter())
                 .map(|(a, b)| a + b)
                 .collect(),
         )
@@ -24,12 +24,9 @@ where
     T: AddAssign,
 {
     fn add_assign(&mut self, rhs: Self) {
-        self.entries
-            .iter_mut()
-            .zip(rhs.entries.into_iter())
-            .for_each(|(a, b)| {
-                *a += b;
-            });
+        self.0.iter_mut().zip(rhs.0.into_iter()).for_each(|(a, b)| {
+            *a += b;
+        });
     }
 }
 

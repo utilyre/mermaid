@@ -6,9 +6,7 @@ use iter::{ColIter, RowIter};
 use std::fmt::{self, Display, Formatter};
 
 #[derive(Debug, Clone)]
-pub struct Matrix<T, const M: usize, const N: usize> {
-    entries: Vec<T>,
-}
+pub struct Matrix<T, const M: usize, const N: usize>(Vec<T>);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn new(entries: Vec<T>) -> Result<Self> {
@@ -20,7 +18,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
             });
         }
 
-        Ok(Self { entries })
+        Ok(Self(entries))
     }
 
     pub const fn is_empty(&self) -> bool {
@@ -40,15 +38,15 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn get(&self, i: usize, j: usize) -> Option<&T> {
-        self.entries.get(N * i + j)
+        self.0.get(N * i + j)
     }
 
     pub fn iter_row(&self, i: usize) -> Option<RowIter<T, N>> {
-        (i < M).then_some(RowIter::new(&self.entries, i))
+        (i < M).then_some(RowIter::new(&self.0, i))
     }
 
     pub fn iter_col(&self, j: usize) -> Option<ColIter<T, M, N>> {
-        (j < N).then_some(ColIter::new(&self.entries, j))
+        (j < N).then_some(ColIter::new(&self.0, j))
     }
 }
 
@@ -57,7 +55,7 @@ where
     T: Display,
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let entries: Vec<_> = self.entries.iter().map(|entry| entry.to_string()).collect();
+        let entries: Vec<_> = self.0.iter().map(|entry| entry.to_string()).collect();
         let Some(longest) = entries.iter().map(|entry| entry.len()).max() else {
             return write!(f, "||");
         };
@@ -89,10 +87,7 @@ where
     T: PartialEq,
 {
     fn eq(&self, other: &Self) -> bool {
-        self.entries
-            .iter()
-            .zip(other.entries.iter())
-            .all(|(a, b)| a == b)
+        self.0.iter().zip(other.0.iter()).all(|(a, b)| a == b)
     }
 }
 
