@@ -5,7 +5,7 @@ use crate::error::{Error, Result};
 use iter::{ColIter, RowIter};
 use std::fmt::{self, Display, Formatter};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matrix<T, const M: usize, const N: usize> {
     entries: Vec<T>,
 }
