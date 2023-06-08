@@ -1,57 +1,59 @@
-pub struct RowIter<'e, T, const N: usize> {
-    entries: &'e [T],
+use super::Matrix;
+
+pub struct RowIter<'m, T, const M: usize, const N: usize> {
+    matrix: &'m Matrix<T, M, N>,
     index: usize,
     end: usize,
 }
 
-impl<'e, T, const N: usize> RowIter<'e, T, N> {
-    pub(super) fn new(entries: &'e [T], i: usize) -> Self {
+impl<'m, T, const M: usize, const N: usize> RowIter<'m, T, M, N> {
+    pub(super) fn new(matrix: &'m Matrix<T, M, N>, i: usize) -> Self {
         Self {
-            entries,
+            matrix,
             index: N * i,
             end: N * (i + 1) - 1,
         }
     }
 }
 
-impl<'e, T, const N: usize> Iterator for RowIter<'e, T, N> {
-    type Item = &'e T;
+impl<'m, T, const M: usize, const N: usize> Iterator for RowIter<'m, T, M, N> {
+    type Item = &'m T;
 
     fn next(&mut self) -> Option<Self::Item> {
         (self.index <= self.end).then(|| {
             let idx = self.index;
             self.index += 1;
 
-            &self.entries[idx]
+            &self.matrix.0[idx]
         })
     }
 }
 
-pub struct ColIter<'e, T, const M: usize, const N: usize> {
-    entries: &'e [T],
+pub struct ColIter<'m, T, const M: usize, const N: usize> {
+    matrix: &'m Matrix<T, M, N>,
     index: usize,
     end: usize,
 }
 
-impl<'e, T, const M: usize, const N: usize> ColIter<'e, T, M, N> {
-    pub(super) fn new(entries: &'e [T], j: usize) -> Self {
+impl<'m, T, const M: usize, const N: usize> ColIter<'m, T, M, N> {
+    pub(super) fn new(matrix: &'m Matrix<T, M, N>, j: usize) -> Self {
         Self {
-            entries,
+            matrix,
             index: j,
             end: (M - 1) * N + j,
         }
     }
 }
 
-impl<'e, T, const M: usize, const N: usize> Iterator for ColIter<'e, T, M, N> {
-    type Item = &'e T;
+impl<'m, T, const M: usize, const N: usize> Iterator for ColIter<'m, T, M, N> {
+    type Item = &'m T;
 
     fn next(&mut self) -> Option<Self::Item> {
         (self.index <= self.end).then(|| {
             let idx = self.index;
             self.index += N;
 
-            &self.entries[idx]
+            &self.matrix.0[idx]
         })
     }
 }
