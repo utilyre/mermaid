@@ -62,7 +62,7 @@ mod tests {
     use std::error::Error;
 
     #[test]
-    fn iter_row() -> Result<(), Box<dyn Error>> {
+    fn row_iter() -> Result<(), Box<dyn Error>> {
         let m: Matrix<_, 5, 3> = Matrix::new(
             vec![0u32; 15]
                 .into_iter()
@@ -71,7 +71,7 @@ mod tests {
                 .collect(),
         )?;
 
-        let mut iter = m.iter_row(2).expect("row exists");
+        let mut iter = m.row_iter(2).expect("row exists");
         assert_eq!(iter.next(), Some(&7));
         assert_eq!(iter.next(), Some(&8));
         assert_eq!(iter.next(), Some(&9));
@@ -82,7 +82,7 @@ mod tests {
     }
 
     #[test]
-    fn iter_col() -> Result<(), Box<dyn Error>> {
+    fn col_iter() -> Result<(), Box<dyn Error>> {
         let m: Matrix<_, 5, 3> = Matrix::new(
             vec![0u32; 15]
                 .into_iter()
@@ -91,7 +91,7 @@ mod tests {
                 .collect(),
         )?;
 
-        let mut iter = m.iter_col(1).expect("col exists");
+        let mut iter = m.col_iter(1).expect("col exists");
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&5));
         assert_eq!(iter.next(), Some(&8));
