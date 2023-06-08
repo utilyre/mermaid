@@ -42,11 +42,11 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn row_iter(&self, i: usize) -> Option<RowIter<T, M, N>> {
-        (i < M).then_some(RowIter::new(&self, i))
+        (i < M).then_some(RowIter::new(self, i))
     }
 
     pub fn col_iter(&self, j: usize) -> Option<ColIter<T, M, N>> {
-        (j < N).then_some(ColIter::new(&self, j))
+        (j < N).then_some(ColIter::new(self, j))
     }
 }
 
