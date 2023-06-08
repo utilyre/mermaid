@@ -1,14 +1,14 @@
 use super::Matrix;
 use std::ops::{Add, AddAssign};
 
-impl<T, const M: usize, const N: usize> Add for Matrix<T, M, N>
+impl<T, U, const M: usize, const N: usize> Add for Matrix<T, M, N>
 where
-    T: Add<Output = T>,
+    T: Add<Output = U>,
 {
-    type Output = Self;
+    type Output = Matrix<U, M, N>;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::new(
+        Self::Output::new(
             self.0
                 .into_iter()
                 .zip(rhs.0.into_iter())
