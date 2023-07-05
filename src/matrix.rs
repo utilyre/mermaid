@@ -1,5 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
-use std::ops::{Add, AddAssign, Mul, MulAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -95,7 +95,38 @@ where
     }
 }
 
-// TODO: Sub and SubAssign
+impl<T, U, V, const M: usize, const N: usize> Sub<Matrix<U, M, N>> for Matrix<T, M, N>
+where
+    for<'a, 'b> &'a T: Sub<&'b U, Output = V>,
+    V: Copy + AdditiveIdentity,
+{
+    type Output = Matrix<V, M, N>;
+
+    fn sub(self, rhs: Matrix<U, M, N>) -> Self::Output {
+        let mut output = Self::Output::O;
+
+        for i in 0..M {
+            for j in 0..N {
+                output.0[i][j] = &self.0[i][j] - &rhs.0[i][j];
+            }
+        }
+
+        output
+    }
+}
+
+impl<T, U, const M: usize, const N: usize> SubAssign<Matrix<U, M, N>> for Matrix<T, M, N>
+where
+    for<'a> T: SubAssign<&'a U>,
+{
+    fn sub_assign(&mut self, rhs: Matrix<U, M, N>) {
+        for i in 0..M {
+            for j in 0..N {
+                self.0[i][j] -= &rhs.0[i][j];
+            }
+        }
+    }
+}
 
 impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
 where
@@ -256,6 +287,30 @@ mod tests {
 
         assert_eq!(
             Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
+            m1
+        )
+    }
+
+    #[test]
+    fn sub() {
+        let m1 = matrix_4x3_1();
+        let m2 = matrix_4x3_2();
+
+        assert_eq!(
+            Matrix::with_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
+            m1 - m2
+        );
+    }
+
+    #[test]
+    fn sub_assign() {
+        let mut m1 = matrix_4x3_1();
+        let m2 = matrix_4x3_2();
+
+        m1 -= m2;
+
+        assert_eq!(
+            Matrix::with_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
             m1
         )
     }
