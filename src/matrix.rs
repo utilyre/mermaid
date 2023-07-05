@@ -1,4 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
+use std::ops::Add;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -39,14 +40,14 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N>
 where
-    T: ~const AdditiveIdentity + Copy,
+    T: Copy + ~const AdditiveIdentity,
 {
     pub const O: Self = Self([[T::additive_identity(); N]; M]);
 }
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N>
 where
-    T: ~const AdditiveIdentity + ~const MultiplicativeIdentity + Copy,
+    T: Copy + ~const AdditiveIdentity + ~const MultiplicativeIdentity,
 {
     pub const I: Self = {
         let mut matrix = Self::O;
@@ -61,12 +62,32 @@ where
     };
 }
 
+impl<T, U, const M: usize, const N: usize> Add for Matrix<T, M, N>
+where
+    for<'a> &'a T: Add<Output = U>,
+    U: Copy + ~const AdditiveIdentity,
+{
+    type Output = Matrix<U, M, N>;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        let mut output = Self::Output::O;
+
+        for i in 0..M {
+            for j in 0..N {
+                output.0[i][j] = &self.0[i][j] + &rhs.0[i][j];
+            }
+        }
+
+        output
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[rustfmt::skip]
-    fn matrix_4x3() -> Matrix<i32, 4, 3> {
+    fn matrix_4x3_1() -> Matrix<i32, 4, 3> {
         Matrix::with_rows([
             [1,  2,  3 ],
             [4,  5,  6 ],
@@ -75,9 +96,19 @@ mod tests {
         ])
     }
 
+    #[rustfmt::skip]
+    fn matrix_4x3_2() -> Matrix<i32, 4, 3> {
+        Matrix::with_rows([
+            [1,  0, 5 ],
+            [3,  2, -1],
+            [3, -2, 7 ],
+            [2,  0, 8 ],
+        ])
+    }
+
     #[test]
     fn row() {
-        let m = matrix_4x3();
+        let m = matrix_4x3_1();
 
         assert_eq!(Some([&1, &2, &3]), m.row(0));
         assert_eq!(Some([&4, &5, &6]), m.row(1));
@@ -89,7 +120,7 @@ mod tests {
 
     #[test]
     fn row_mut() {
-        let mut m = matrix_4x3();
+        let mut m = matrix_4x3_1();
 
         assert_eq!(Some([&mut 1, &mut 2, &mut 3]), m.row_mut(0));
         assert_eq!(Some([&mut 4, &mut 5, &mut 6]), m.row_mut(1));
@@ -101,7 +132,7 @@ mod tests {
 
     #[test]
     fn col() {
-        let m = matrix_4x3();
+        let m = matrix_4x3_1();
 
         assert_eq!(Some([&1, &4, &7, &10]), m.col(0));
         assert_eq!(Some([&2, &5, &8, &11]), m.col(1));
@@ -112,7 +143,7 @@ mod tests {
 
     #[test]
     fn col_mut() {
-        let mut m = matrix_4x3();
+        let mut m = matrix_4x3_1();
 
         assert_eq!(Some([&mut 1, &mut 4, &mut 7, &mut 10]), m.col_mut(0));
         assert_eq!(Some([&mut 2, &mut 5, &mut 8, &mut 11]), m.col_mut(1));
@@ -123,7 +154,7 @@ mod tests {
 
     #[test]
     fn get() {
-        let m = matrix_4x3();
+        let m = matrix_4x3_1();
 
         assert_eq!(Some(&1), m.get(0, 0));
         assert_eq!(Some(&4), m.get(1, 0));
@@ -135,7 +166,7 @@ mod tests {
 
     #[test]
     fn get_mut() {
-        let mut m = matrix_4x3();
+        let mut m = matrix_4x3_1();
 
         assert_eq!(Some(&mut 1), m.get_mut(0, 0));
         assert_eq!(Some(&mut 4), m.get_mut(1, 0));
@@ -154,6 +185,17 @@ mod tests {
         assert_eq!(
             Matrix::with_rows([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
             m_4x4
+        );
+    }
+
+    #[test]
+    fn add() {
+        let m1 = matrix_4x3_1();
+        let m2 = matrix_4x3_2();
+
+        assert_eq!(
+            Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
+            m1 + m2
         );
     }
 }
