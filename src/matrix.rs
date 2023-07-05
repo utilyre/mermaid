@@ -1,5 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
-use std::ops::Add;
+use std::ops::{Add, AddAssign};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -79,6 +79,19 @@ where
         }
 
         output
+    }
+}
+
+impl<T, U, const M: usize, const N: usize> AddAssign<Matrix<U, M, N>> for Matrix<T, M, N>
+where
+    for<'a> T: AddAssign<&'a U>,
+{
+    fn add_assign(&mut self, rhs: Matrix<U, M, N>) {
+        for i in 0..M {
+            for j in 0..N {
+                self.0[i][j] += &rhs.0[i][j];
+            }
+        }
     }
 }
 
@@ -197,5 +210,18 @@ mod tests {
             Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
             m1 + m2
         );
+    }
+
+    #[test]
+    fn add_assign() {
+        let mut m1 = matrix_4x3_1();
+        let m2 = matrix_4x3_2();
+
+        m1 += m2;
+
+        assert_eq!(
+            Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
+            m1
+        )
     }
 }
