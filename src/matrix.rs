@@ -1,3 +1,5 @@
+use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
@@ -35,57 +37,29 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
-macro_rules! impl_o {
-    ($t: ty, $v: expr) => {
-        impl<const M: usize, const N: usize> Matrix<$t, M, N> {
-            pub const O: Self = Self([[$v; N]; M]);
-        }
-    };
+impl<T, const M: usize, const N: usize> Matrix<T, M, N>
+where
+    T: ~const AdditiveIdentity + Copy,
+{
+    pub const O: Self = Self([[T::additive_identity(); N]; M]);
 }
 
-impl_o!(u8, 0);
-impl_o!(u16, 0);
-impl_o!(u32, 0);
-impl_o!(u64, 0);
-impl_o!(usize, 0);
-impl_o!(i8, 0);
-impl_o!(i16, 0);
-impl_o!(i32, 0);
-impl_o!(i64, 0);
-impl_o!(isize, 0);
-impl_o!(f32, 0.0);
-impl_o!(f64, 0.0);
+impl<T, const M: usize, const N: usize> Matrix<T, M, N>
+where
+    T: ~const AdditiveIdentity + ~const MultiplicativeIdentity + Copy,
+{
+    pub const I: Self = {
+        let mut matrix = Self::O;
 
-macro_rules! impl_i {
-    ($t: ty, $v: expr) => {
-        impl<const M: usize> Matrix<$t, M, M> {
-            pub const I: Self = {
-                let mut matrix = Self::O;
-
-                let mut i = 0;
-                while i < M {
-                    matrix.0[i][i] = $v;
-                    i += 1;
-                }
-
-                matrix
-            };
+        let mut i = 0;
+        while i < M {
+            matrix.0[i][i] = T::multiplicative_identity();
+            i += 1;
         }
+
+        matrix
     };
 }
-
-impl_i!(u8, 1);
-impl_i!(u16, 1);
-impl_i!(u32, 1);
-impl_i!(u64, 1);
-impl_i!(usize, 1);
-impl_i!(i8, 1);
-impl_i!(i16, 1);
-impl_i!(i32, 1);
-impl_i!(i64, 1);
-impl_i!(isize, 1);
-impl_i!(f32, 1.0);
-impl_i!(f64, 1.0);
 
 #[cfg(test)]
 mod tests {
