@@ -35,6 +35,27 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
+macro_rules! impl_o {
+    ($t: ty, $v: expr) => {
+        impl<const M: usize, const N: usize> Matrix<$t, M, N> {
+            pub const O: Self = Self([[$v; N]; M]);
+        }
+    };
+}
+
+impl_o!(u8, 0);
+impl_o!(u16, 0);
+impl_o!(u32, 0);
+impl_o!(u64, 0);
+impl_o!(usize, 0);
+impl_o!(i8, 0);
+impl_o!(i16, 0);
+impl_o!(i32, 0);
+impl_o!(i64, 0);
+impl_o!(isize, 0);
+impl_o!(f32, 0.0);
+impl_o!(f64, 0.0);
+
 #[cfg(test)]
 mod tests {
     use super::*;
