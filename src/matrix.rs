@@ -1,93 +1,16 @@
-pub mod iter;
-pub mod ops;
-
-use crate::error::{Error, Result};
-use iter::{ColIter, RowIter};
-use std::fmt::{self, Display, Formatter};
-
-#[derive(Debug, Clone)]
-pub struct Matrix<T, const M: usize, const N: usize>(Vec<T>);
+pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
-    pub fn new(entries: Vec<T>) -> Result<Self> {
-        if entries.len() != M * N {
-            return Err(Error::WrongEntriesLength {
-                rows: M,
-                cols: N,
-                len: entries.len(),
-            });
-        }
-
-        Ok(Self(entries))
+    pub const fn with_rows(rows: [[T; N]; M]) -> Self {
+        Self(rows)
     }
 
-    pub const fn is_empty(&self) -> bool {
-        M == 0 || N == 0
+    pub fn row(&self, i: usize) -> Option<[&T; N]> {
+        self.0.get(i).map(|row| row.each_ref())
     }
 
-    pub const fn is_row(&self) -> bool {
-        M == 1
-    }
-
-    pub const fn is_col(&self) -> bool {
-        N == 1
-    }
-
-    pub const fn is_square(&self) -> bool {
-        M == N
-    }
-
-    pub fn get(&self, i: usize, j: usize) -> Option<&T> {
-        self.0.get(N * i + j)
-    }
-
-    pub fn row_iter(&self, i: usize) -> Option<RowIter<T, M, N>> {
-        (i < M).then_some(RowIter::new(self, i))
-    }
-
-    pub fn col_iter(&self, j: usize) -> Option<ColIter<T, M, N>> {
-        (j < N).then_some(ColIter::new(self, j))
-    }
-}
-
-impl<T, const M: usize, const N: usize> Display for Matrix<T, M, N>
-where
-    T: Display,
-{
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        let entries: Vec<_> = self.0.iter().map(|entry| entry.to_string()).collect();
-        let Some(longest) = entries.iter().map(|entry| entry.len()).max() else {
-            return write!(f, "||");
-        };
-
-        for i in 0..M {
-            write!(
-                f,
-                "|{}|",
-                &entries[N * i..N * (i + 1)]
-                    .iter()
-                    .fold(String::new(), |acc, entry| {
-                        acc + &format!("{: ^longest$}", entry, longest = longest + 2)
-                    })
-            )?;
-
-            if i < M - 1 {
-                writeln!(f)?;
-            }
-        }
-
-        Ok(())
-    }
-}
-
-impl<T, const M: usize, const N: usize> Eq for Matrix<T, M, N> where T: Eq {}
-
-impl<T, const M: usize, const N: usize> PartialEq for Matrix<T, M, N>
-where
-    T: PartialEq,
-{
-    fn eq(&self, other: &Self) -> bool {
-        self.0.iter().zip(other.0.iter()).all(|(a, b)| a == b)
+    pub fn col(&self, j: usize) -> Option<[&T; M]> {
+        (j < N).then(|| self.0.each_ref().map(|row| &row[j]))
     }
 }
 
@@ -95,11 +18,36 @@ where
 mod tests {
     use super::*;
 
+    #[rustfmt::skip]
+    fn matrix_4x3() -> Matrix<i32, 4, 3> {
+        Matrix::with_rows([
+            [1,  2,  3 ],
+            [4,  5,  6 ],
+            [7,  8,  9 ],
+            [10, 11, 12],
+        ])
+    }
+
     #[test]
-    #[should_panic = "entry array of size `2` does not match matrix of size `2x3`"]
-    fn instantiation() {
-        if let Err(err) = Matrix::<_, 2, 3>::new(vec![0u32, 2]) {
-            panic!("{}", err);
-        }
+    fn row() {
+        let m = matrix_4x3();
+
+        assert_eq!(Some([&1, &2, &3]), m.row(0));
+        assert_eq!(Some([&4, &5, &6]), m.row(1));
+        assert_eq!(Some([&7, &8, &9]), m.row(2));
+        assert_eq!(Some([&10, &11, &12]), m.row(3));
+        assert_eq!(None, m.row(4));
+        assert_eq!(None, m.row(5));
+    }
+
+    #[test]
+    fn col() {
+        let m = matrix_4x3();
+
+        assert_eq!(Some([&1, &4, &7, &10]), m.col(0));
+        assert_eq!(Some([&2, &5, &8, &11]), m.col(1));
+        assert_eq!(Some([&3, &6, &9, &12]), m.col(2));
+        assert_eq!(None, m.col(3));
+        assert_eq!(None, m.col(4));
     }
 }
