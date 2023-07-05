@@ -1,5 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
-use std::ops::{Add, AddAssign, Mul};
+use std::ops::{Add, AddAssign, Mul, MulAssign};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -95,6 +95,8 @@ where
     }
 }
 
+// TODO: Sub and SubAssign
+
 impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
@@ -112,6 +114,19 @@ where
         }
 
         output
+    }
+}
+
+impl<T, U, const M: usize, const N: usize> MulAssign<U> for Matrix<T, M, N>
+where
+    for<'a> T: MulAssign<&'a U>,
+{
+    fn mul_assign(&mut self, rhs: U) {
+        for i in 0..M {
+            for j in 0..N {
+                self.0[i][j] *= &rhs;
+            }
+        }
     }
 }
 
@@ -253,6 +268,19 @@ mod tests {
         assert_eq!(
             Matrix::with_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
             m * k
+        );
+    }
+
+    #[test]
+    fn mul_assign() {
+        let k = 5;
+        let mut m = matrix_4x3_1();
+
+        m *= k;
+
+        assert_eq!(
+            Matrix::with_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
+            m
         );
     }
 }
