@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
