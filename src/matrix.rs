@@ -64,7 +64,7 @@ where
 
 impl<T, U, V, const M: usize, const N: usize> Add<Matrix<U, M, N>> for Matrix<T, M, N>
 where
-    for<'a> &'a T: Add<&'a U, Output = V>,
+    for<'a, 'b> &'a T: Add<&'b U, Output = V>,
     V: Copy + ~const AdditiveIdentity,
 {
     type Output = Matrix<V, M, N>;
@@ -97,8 +97,7 @@ where
 
 impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
 where
-    // TODO: separate the lifetimes into 'a and 'b
-    for<'a> &'a T: Mul<&'a U, Output = V>,
+    for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
     V: Copy + AdditiveIdentity,
 {
     type Output = Matrix<V, M, N>;
