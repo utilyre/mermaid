@@ -1,8 +1,13 @@
+#[derive(Debug, Clone)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub const fn with_rows(rows: [[T; N]; M]) -> Self {
         Self(rows)
+    }
+
+    pub const fn with_cols(_cols: [[T; M]; N]) -> Self {
+        todo!()
     }
 
     pub fn row(&self, i: usize) -> Option<[&T; N]> {
