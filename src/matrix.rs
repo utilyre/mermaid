@@ -56,6 +56,37 @@ impl_o!(isize, 0);
 impl_o!(f32, 0.0);
 impl_o!(f64, 0.0);
 
+macro_rules! impl_i {
+    ($t: ty, $v: expr) => {
+        impl<const M: usize> Matrix<$t, M, M> {
+            pub const I: Self = {
+                let mut matrix = Self::O;
+
+                let mut i = 0;
+                while i < M {
+                    matrix.0[i][i] = $v;
+                    i += 1;
+                }
+
+                matrix
+            };
+        }
+    };
+}
+
+impl_i!(u8, 1);
+impl_i!(u16, 1);
+impl_i!(u32, 1);
+impl_i!(u64, 1);
+impl_i!(usize, 1);
+impl_i!(i8, 1);
+impl_i!(i16, 1);
+impl_i!(i32, 1);
+impl_i!(i64, 1);
+impl_i!(isize, 1);
+impl_i!(f32, 1.0);
+impl_i!(f64, 1.0);
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -138,5 +169,17 @@ mod tests {
         assert_eq!(None, m.get_mut(4, 0));
         assert_eq!(None, m.get_mut(2, 5));
         assert_eq!(None, m.get_mut(6, 7));
+    }
+
+    #[test]
+    fn identity() {
+        let m_3x3 = Matrix::<u32, 3, 3>::I;
+        let m_4x4 = Matrix::<u32, 4, 4>::I;
+
+        assert_eq!(Matrix::with_rows([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), m_3x3);
+        assert_eq!(
+            Matrix::with_rows([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+            m_4x4
+        );
     }
 }
