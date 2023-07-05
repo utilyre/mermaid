@@ -62,14 +62,14 @@ where
     };
 }
 
-impl<T, U, const M: usize, const N: usize> Add for Matrix<T, M, N>
+impl<T, U, V, const M: usize, const N: usize> Add<Matrix<U, M, N>> for Matrix<T, M, N>
 where
-    for<'a> &'a T: Add<Output = U>,
-    U: Copy + ~const AdditiveIdentity,
+    for<'a> &'a T: Add<&'a U, Output = V>,
+    V: Copy + ~const AdditiveIdentity,
 {
-    type Output = Matrix<U, M, N>;
+    type Output = Matrix<V, M, N>;
 
-    fn add(self, rhs: Self) -> Self::Output {
+    fn add(self, rhs: Matrix<U, M, N>) -> Self::Output {
         let mut output = Self::Output::O;
 
         for i in 0..M {
