@@ -1,5 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
-use std::ops::{Add, AddAssign};
+use std::ops::{Add, AddAssign, Mul};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -95,6 +95,27 @@ where
     }
 }
 
+impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
+where
+    // TODO: separate the lifetimes into 'a and 'b
+    for<'a> &'a T: Mul<&'a U, Output = V>,
+    V: Copy + AdditiveIdentity,
+{
+    type Output = Matrix<V, M, N>;
+
+    fn mul(self, rhs: U) -> Self::Output {
+        let mut output = Self::Output::O;
+
+        for i in 0..M {
+            for j in 0..N {
+                output.0[i][j] = &self.0[i][j] * &rhs;
+            }
+        }
+
+        output
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -112,10 +133,10 @@ mod tests {
     #[rustfmt::skip]
     fn matrix_4x3_2() -> Matrix<i32, 4, 3> {
         Matrix::with_rows([
-            [1,  0, 5 ],
-            [3,  2, -1],
-            [3, -2, 7 ],
-            [2,  0, 8 ],
+            [1,  0,  5 ],
+            [3,  2, -1 ],
+            [3, -2,  7 ],
+            [2,  0,  8 ],
         ])
     }
 
@@ -223,5 +244,16 @@ mod tests {
             Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
             m1
         )
+    }
+
+    #[test]
+    fn mul() {
+        let k = 5;
+        let m = matrix_4x3_1();
+
+        assert_eq!(
+            Matrix::with_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
+            m * k
+        );
     }
 }
