@@ -1,11 +1,10 @@
-#[const_trait]
 pub trait AdditiveIdentity {
     fn additive_identity() -> Self;
 }
 
 macro_rules! impl_additive_identity {
     ($t: ty, $v: expr) => {
-        impl const AdditiveIdentity for $t {
+        impl AdditiveIdentity for $t {
             fn additive_identity() -> Self {
                 $v
             }
@@ -26,14 +25,13 @@ impl_additive_identity!(isize, 0);
 impl_additive_identity!(f32, 0.0);
 impl_additive_identity!(f64, 0.0);
 
-#[const_trait]
 pub trait MultiplicativeIdentity {
     fn multiplicative_identity() -> Self;
 }
 
 macro_rules! impl_multiplicative_identity {
     ($t: ty, $v: expr) => {
-        impl const MultiplicativeIdentity for $t {
+        impl MultiplicativeIdentity for $t {
             fn multiplicative_identity() -> Self {
                 $v
             }

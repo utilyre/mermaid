@@ -1,4 +1,3 @@
-#![feature(const_trait_impl)]
 #![feature(array_methods)]
 
 pub mod identity;
