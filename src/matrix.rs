@@ -1,5 +1,5 @@
 use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
-use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -125,6 +125,26 @@ where
                 self.0[i][j] -= &rhs.0[i][j];
             }
         }
+    }
+}
+
+impl<T, U, const M: usize, const N: usize> Neg for Matrix<T, M, N>
+where
+    for<'a> &'a T: Neg<Output = U>,
+    U: Copy + AdditiveIdentity,
+{
+    type Output = Matrix<U, M, N>;
+
+    fn neg(self) -> Self::Output {
+        let mut output = Self::Output::O;
+
+        for i in 0..M {
+            for j in 0..N {
+                output.0[i][j] = -&self.0[i][j];
+            }
+        }
+
+        output
     }
 }
 
@@ -313,6 +333,16 @@ mod tests {
             Matrix::with_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
             m1
         )
+    }
+
+    #[test]
+    fn neg() {
+        let m = matrix_4x3_2();
+
+        assert_eq!(
+            Matrix::with_rows([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
+            -m
+        );
     }
 
     #[test]
