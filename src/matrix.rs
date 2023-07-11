@@ -15,11 +15,6 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         Self(rows)
     }
 
-    pub const fn from_cols(_cols: [[T; M]; N]) -> Self {
-        // TODO: needs unsafe code
-        unimplemented!()
-    }
-
     pub fn into_rows(self) -> [[T; N]; M] {
         self.0
     }
