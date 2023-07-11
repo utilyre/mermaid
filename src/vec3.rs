@@ -18,7 +18,7 @@ impl Vec3 {
     }
 
     pub fn dot(self, rhs: Self) -> f32 {
-        self.x * rhs.x + self.y * rhs.y
+        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
     pub fn cross(self, rhs: Self) -> Vec3 {
@@ -113,5 +113,80 @@ impl Mul<Vec3> for f32 {
 
     fn mul(self, rhs: Vec3) -> Self::Output {
         Vec3::new(self * rhs.x, self * rhs.y, self * rhs.z)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn len() {
+        let v = Vec3::new(3.0, 4.0, 12.0);
+        assert_eq!(13.0, v.len());
+    }
+
+    #[test]
+    fn dot() {
+        let v1 = Vec3::new(1.0, 6.0, 3.0);
+        let v2 = Vec3::new(8.0, 9.0, 2.0);
+
+        assert_eq!(68.0, v1.dot(v2));
+    }
+
+    #[test]
+    fn add() {
+        let v1 = Vec3::new(23.0, 18.0, 1.0);
+        let v2 = Vec3::new(5.0, 32.0, 12.0);
+
+        assert_eq!(Vec3::new(28.0, 50.0, 13.0), v1 + v2);
+    }
+
+    #[test]
+    fn add_assign() {
+        let mut v1 = Vec3::new(23.0, 18.0, 1.0);
+        let v2 = Vec3::new(5.0, 32.0, 12.0);
+
+        v1 += v2;
+        assert_eq!(Vec3::new(28.0, 50.0, 13.0), v1);
+    }
+
+    #[test]
+    fn sub() {
+        let v1 = Vec3::new(23.0, 18.0, 1.0);
+        let v2 = Vec3::new(5.0, 32.0, 12.0);
+
+        assert_eq!(Vec3::new(18.0, -14.0, -11.0), v1 - v2);
+    }
+
+    #[test]
+    fn sub_assign() {
+        let mut v1 = Vec3::new(23.0, 18.0, 1.0);
+        let v2 = Vec3::new(5.0, 32.0, 12.0);
+
+        v1 -= v2;
+        assert_eq!(Vec3::new(18.0, -14.0, -11.0), v1);
+    }
+
+    #[test]
+    fn neg() {
+        let v = Vec3::new(-7.0, 13.0, 2.0);
+        assert_eq!(Vec3::new(7.0, -13.0, -2.0), -v);
+    }
+
+    #[test]
+    fn mul() {
+        let v = Vec3::new(-7.0, 13.0, 2.0);
+
+        assert_eq!(Vec3::new(-10.5, 19.5, 3.0), v * 1.5);
+        assert_eq!(Vec3::new(-10.5, 19.5, 3.0), 1.5 * v);
+    }
+
+    #[test]
+    fn mul_assign() {
+        let mut v = Vec3::new(-7.0, 13.0, 2.0);
+
+        v *= 1.5;
+        assert_eq!(Vec3::new(-10.5, 19.5, 3.0), v);
     }
 }

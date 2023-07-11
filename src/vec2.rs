@@ -102,3 +102,78 @@ impl Mul<Vec2> for f32 {
         Vec2::new(self * rhs.x, self * rhs.y)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn len() {
+        let v = Vec2::new(3.0, 4.0);
+        assert_eq!(5.0, v.len());
+    }
+
+    #[test]
+    fn dot() {
+        let v1 = Vec2::new(1.0, 6.0);
+        let v2 = Vec2::new(8.0, 9.0);
+
+        assert_eq!(62.0, v1.dot(v2));
+    }
+
+    #[test]
+    fn add() {
+        let v1 = Vec2::new(23.0, 18.0);
+        let v2 = Vec2::new(5.0, 32.0);
+
+        assert_eq!(Vec2::new(28.0, 50.0), v1 + v2);
+    }
+
+    #[test]
+    fn add_assign() {
+        let mut v1 = Vec2::new(23.0, 18.0);
+        let v2 = Vec2::new(5.0, 32.0);
+
+        v1 += v2;
+        assert_eq!(Vec2::new(28.0, 50.0), v1);
+    }
+
+    #[test]
+    fn sub() {
+        let v1 = Vec2::new(23.0, 18.0);
+        let v2 = Vec2::new(5.0, 32.0);
+
+        assert_eq!(Vec2::new(18.0, -14.0), v1 - v2);
+    }
+
+    #[test]
+    fn sub_assign() {
+        let mut v1 = Vec2::new(23.0, 18.0);
+        let v2 = Vec2::new(5.0, 32.0);
+
+        v1 -= v2;
+        assert_eq!(Vec2::new(18.0, -14.0), v1);
+    }
+
+    #[test]
+    fn neg() {
+        let v = Vec2::new(-7.0, 13.0);
+        assert_eq!(Vec2::new(7.0, -13.0), -v);
+    }
+
+    #[test]
+    fn mul() {
+        let v = Vec2::new(-7.0, 13.0);
+
+        assert_eq!(Vec2::new(-10.5, 19.5), v * 1.5);
+        assert_eq!(Vec2::new(-10.5, 19.5), 1.5 * v);
+    }
+
+    #[test]
+    fn mul_assign() {
+        let mut v = Vec2::new(-7.0, 13.0);
+
+        v *= 1.5;
+        assert_eq!(Vec2::new(-10.5, 19.5), v);
+    }
+}
