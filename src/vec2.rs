@@ -1,7 +1,7 @@
-use crate::matrix::Matrix;
+use crate::{matrix::Matrix, prelude::IdAdd};
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Vec2 {
     pub x: f32,
     pub y: f32,
@@ -39,6 +39,12 @@ impl From<[f32; 2]> for Vec2 {
 impl From<Matrix<f32, 2, 1>> for Vec2 {
     fn from(value: Matrix<f32, 2, 1>) -> Self {
         Self::new(value[(0, 0)], value[(1, 0)])
+    }
+}
+
+impl IdAdd for Vec2 {
+    fn id_add() -> Self {
+        Self::new(0.0, 0.0)
     }
 }
 
