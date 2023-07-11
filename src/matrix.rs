@@ -57,6 +57,57 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
+impl<T> Matrix<T, 1, 1>
+where
+    T: ToOwned,
+{
+    pub fn det(&self) -> T::Owned {
+        self.get(0, 0).expect("is not out of bounds").to_owned()
+    }
+}
+
+impl<T> Matrix<T, 2, 2>
+where
+    for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
+    T: Sub<T, Output = T>,
+{
+    pub fn det(&self) -> T {
+        self.get(0, 0).expect("is not out of bounds")
+            * self.get(1, 1).expect("is not out of bounds")
+            - self.get(0, 1).expect("is not out of bounds")
+                * self.get(1, 0).expect("is not out of bounds")
+    }
+}
+
+impl<T> Matrix<T, 3, 3>
+where
+    for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
+    for<'a> T: Mul<&'a T, Output = T>,
+    T: Add<T, Output = T>,
+    T: Sub<T, Output = T>,
+{
+    pub fn det(&self) -> T {
+        self.get(0, 0).expect("is not out of bounds")
+            * self.get(1, 1).expect("is not out of bounds")
+            * self.get(2, 2).expect("is not out of bounds")
+            + self.get(0, 1).expect("is not out of bounds")
+                * self.get(1, 2).expect("is not out of bounds")
+                * self.get(2, 0).expect("is not out of bounds")
+            + self.get(0, 2).expect("is not out of bounds")
+                * self.get(1, 0).expect("is not out of bounds")
+                * self.get(2, 1).expect("is not out of bounds")
+            - self.get(0, 2).expect("is not out of bounds")
+                * self.get(1, 1).expect("is not out of bounds")
+                * self.get(2, 0).expect("is not out of bounds")
+            - self.get(0, 0).expect("is not out of bounds")
+                * self.get(1, 2).expect("is not out of bounds")
+                * self.get(2, 1).expect("is not out of bounds")
+            - self.get(0, 1).expect("is not out of bounds")
+                * self.get(1, 0).expect("is not out of bounds")
+                * self.get(2, 2).expect("is not out of bounds")
+    }
+}
+
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
         Matrix::new([[value.x], [value.y]])
@@ -293,9 +344,26 @@ mod tests {
     }
 
     #[test]
+    fn det1x1() {
+        let mat = Matrix::new([[-3]]);
+        assert_eq!(-3, mat.det());
+    }
+
+    #[test]
+    fn det2x2() {
+        let mat = Matrix::new([[5, -1], [8, 2]]);
+        assert_eq!(18, mat.det());
+    }
+
+    #[test]
+    fn det3x3() {
+        let mat = Matrix::new([[0, -1, 2], [3, 2, 1], [-2, -3, 4]]);
+        assert_eq!(4, mat.det());
+    }
+
+    #[test]
     fn from_vec2() {
         let mat = Matrix::from([Vec2::new(9.0, 3.0), Vec2::new(2.0, 7.0)]);
-
         assert_eq!(Matrix::new([[9.0, 2.0], [3.0, 7.0],]), mat);
     }
 
