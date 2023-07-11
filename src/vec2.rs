@@ -35,10 +35,7 @@ impl From<[f32; 2]> for Vec2 {
 
 impl From<Matrix<f32, 2, 1>> for Vec2 {
     fn from(value: Matrix<f32, 2, 1>) -> Self {
-        Self::new(
-            *value.get(0, 0).expect("is not out of bounds"),
-            *value.get(1, 0).expect("is not out of bounds"),
-        )
+        Self::new(value[(0, 0)], value[(1, 0)])
     }
 }
 

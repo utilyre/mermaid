@@ -62,7 +62,7 @@ where
     T: ToOwned,
 {
     pub fn det(&self) -> T::Owned {
-        self.get(0, 0).expect("is not out of bounds").to_owned()
+        self[(0, 0)].to_owned()
     }
 }
 
@@ -72,10 +72,7 @@ where
     T: Sub<T, Output = T>,
 {
     pub fn det(&self) -> T {
-        self.get(0, 0).expect("is not out of bounds")
-            * self.get(1, 1).expect("is not out of bounds")
-            - self.get(0, 1).expect("is not out of bounds")
-                * self.get(1, 0).expect("is not out of bounds")
+        &self[(0, 0)] * &self[(1, 1)] - &self[(0, 1)] * &self[(1, 0)]
     }
 }
 
@@ -87,24 +84,12 @@ where
     T: Sub<T, Output = T>,
 {
     pub fn det(&self) -> T {
-        self.get(0, 0).expect("is not out of bounds")
-            * self.get(1, 1).expect("is not out of bounds")
-            * self.get(2, 2).expect("is not out of bounds")
-            + self.get(0, 1).expect("is not out of bounds")
-                * self.get(1, 2).expect("is not out of bounds")
-                * self.get(2, 0).expect("is not out of bounds")
-            + self.get(0, 2).expect("is not out of bounds")
-                * self.get(1, 0).expect("is not out of bounds")
-                * self.get(2, 1).expect("is not out of bounds")
-            - self.get(0, 2).expect("is not out of bounds")
-                * self.get(1, 1).expect("is not out of bounds")
-                * self.get(2, 0).expect("is not out of bounds")
-            - self.get(0, 0).expect("is not out of bounds")
-                * self.get(1, 2).expect("is not out of bounds")
-                * self.get(2, 1).expect("is not out of bounds")
-            - self.get(0, 1).expect("is not out of bounds")
-                * self.get(1, 0).expect("is not out of bounds")
-                * self.get(2, 2).expect("is not out of bounds")
+        &self[(0, 0)] * &self[(1, 1)] * &self[(2, 2)]
+            + &self[(0, 1)] * &self[(1, 2)] * &self[(2, 0)]
+            + &self[(0, 2)] * &self[(1, 0)] * &self[(2, 1)]
+            - &self[(0, 2)] * &self[(1, 1)] * &self[(2, 0)]
+            - &self[(0, 0)] * &self[(1, 2)] * &self[(2, 1)]
+            - &self[(0, 1)] * &self[(1, 0)] * &self[(2, 2)]
     }
 }
 
@@ -204,9 +189,7 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                *output.get_mut(i, j).expect("is not out of bounds") =
-                    self.get(i, j).expect("is not out of bounds")
-                        + rhs.get(i, j).expect("is not out of bounds");
+                output[(i, j)] = &self[(i, j)] + &rhs[(i, j)];
             }
         }
 
@@ -221,8 +204,7 @@ where
     fn add_assign(&mut self, rhs: Matrix<U, M, N>) {
         for i in 0..M {
             for j in 0..N {
-                *self.get_mut(i, j).expect("is not out of bounds") +=
-                    rhs.get(i, j).expect("is not out of bounds");
+                self[(i, j)] += &rhs[(i, j)];
             }
         }
     }
@@ -240,9 +222,7 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                *output.get_mut(i, j).expect("is not out of bounds") =
-                    self.get(i, j).expect("is not out of bounds")
-                        - rhs.get(i, j).expect("is not out of bounds");
+                output[(i, j)] = &self[(i, j)] - &rhs[(i, j)];
             }
         }
 
@@ -257,8 +237,7 @@ where
     fn sub_assign(&mut self, rhs: Matrix<U, M, N>) {
         for i in 0..M {
             for j in 0..N {
-                *self.get_mut(i, j).expect("is not out of bounds") -=
-                    rhs.get(i, j).expect("is not out of bounds");
+                self[(i, j)] -= &rhs[(i, j)];
             }
         }
     }
@@ -276,8 +255,7 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                *output.get_mut(i, j).expect("is not out of bounds") =
-                    -self.get(i, j).expect("is not out of bounds");
+                output[(i, j)] = -&self[(i, j)];
             }
         }
 
@@ -297,8 +275,7 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                *output.get_mut(i, j).expect("is not out of bounds") =
-                    self.get(i, j).expect("is not out of bounds") * &rhs;
+                output[(i, j)] = &self[(i, j)] * &rhs;
             }
         }
 
@@ -313,7 +290,7 @@ where
     fn mul_assign(&mut self, rhs: U) {
         for i in 0..M {
             for j in 0..N {
-                *self.get_mut(i, j).expect("is not out of bounds") *= &rhs;
+                self[(i, j)] *= &rhs;
             }
         }
     }
