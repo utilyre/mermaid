@@ -8,6 +8,9 @@ pub struct Vec2 {
 }
 
 impl Vec2 {
+    pub const I: Self = Self::new(1.0, 0.0);
+    pub const J: Self = Self::new(0.0, 1.0);
+
     pub const fn new(x: f32, y: f32) -> Self {
         Self { x, y }
     }
