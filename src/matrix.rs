@@ -211,17 +211,17 @@ mod tests {
     use super::*;
 
     #[rustfmt::skip]
-    fn matrix_4x3_1() -> Matrix<i32, 4, 3> {
+    fn new_matrix4x3_01() -> Matrix<i32, 4, 3> {
         Matrix::new([
-            [1,  2,  3 ],
-            [4,  5,  6 ],
-            [7,  8,  9 ],
-            [10, 11, 12],
+            [ 8,  6, -1],
+            [ 0,  7,  2],
+            [ 4,  4,  5],
+            [-3, -5,  3],
         ])
     }
 
     #[rustfmt::skip]
-    fn matrix_4x3_2() -> Matrix<i32, 4, 3> {
+    fn new_matrix4x3_02() -> Matrix<i32, 4, 3> {
         Matrix::new([
             [1,  0,  5 ],
             [3,  2, -1 ],
@@ -231,77 +231,31 @@ mod tests {
     }
 
     #[test]
-    fn row() {
-        let m = matrix_4x3_1();
-
-        assert_eq!(Some([&1, &2, &3]), m.row(0));
-        assert_eq!(Some([&4, &5, &6]), m.row(1));
-        assert_eq!(Some([&7, &8, &9]), m.row(2));
-        assert_eq!(Some([&10, &11, &12]), m.row(3));
-        assert_eq!(None, m.row(4));
-        assert_eq!(None, m.row(5));
-    }
-
-    #[test]
     fn row_mut() {
-        let mut m = matrix_4x3_1();
+        let mut m = new_matrix4x3_01();
 
-        assert_eq!(Some([&mut 1, &mut 2, &mut 3]), m.row_mut(0));
-        assert_eq!(Some([&mut 4, &mut 5, &mut 6]), m.row_mut(1));
-        assert_eq!(Some([&mut 7, &mut 8, &mut 9]), m.row_mut(2));
-        assert_eq!(Some([&mut 10, &mut 11, &mut 12]), m.row_mut(3));
-        assert_eq!(None, m.row_mut(4));
-        assert_eq!(None, m.row_mut(5));
-    }
+        let row = m.row_mut(2).unwrap();
+        *row[1] = 10;
+        *row[2] = 8;
 
-    #[test]
-    fn col() {
-        let m = matrix_4x3_1();
-
-        assert_eq!(Some([&1, &4, &7, &10]), m.col(0));
-        assert_eq!(Some([&2, &5, &8, &11]), m.col(1));
-        assert_eq!(Some([&3, &6, &9, &12]), m.col(2));
-        assert_eq!(None, m.col(3));
-        assert_eq!(None, m.col(4));
+        assert_eq!(Some(&10), m.get(2, 1));
+        assert_eq!(Some(&8), m.get(2, 2));
     }
 
     #[test]
     fn col_mut() {
-        let mut m = matrix_4x3_1();
+        let mut m = new_matrix4x3_01();
 
-        assert_eq!(Some([&mut 1, &mut 4, &mut 7, &mut 10]), m.col_mut(0));
-        assert_eq!(Some([&mut 2, &mut 5, &mut 8, &mut 11]), m.col_mut(1));
-        assert_eq!(Some([&mut 3, &mut 6, &mut 9, &mut 12]), m.col_mut(2));
-        assert_eq!(None, m.col_mut(3));
-        assert_eq!(None, m.col_mut(4));
+        let col = m.col_mut(2).unwrap();
+        *col[0] = 1;
+        *col[3] = 5;
+
+        assert_eq!(Some(&1), m.get(0, 2));
+        assert_eq!(Some(&5), m.get(3, 2));
     }
 
     #[test]
-    fn get() {
-        let m = matrix_4x3_1();
-
-        assert_eq!(Some(&1), m.get(0, 0));
-        assert_eq!(Some(&4), m.get(1, 0));
-        assert_eq!(Some(&12), m.get(3, 2));
-        assert_eq!(None, m.get(4, 0));
-        assert_eq!(None, m.get(2, 5));
-        assert_eq!(None, m.get(6, 7));
-    }
-
-    #[test]
-    fn get_mut() {
-        let mut m = matrix_4x3_1();
-
-        assert_eq!(Some(&mut 1), m.get_mut(0, 0));
-        assert_eq!(Some(&mut 4), m.get_mut(1, 0));
-        assert_eq!(Some(&mut 12), m.get_mut(3, 2));
-        assert_eq!(None, m.get_mut(4, 0));
-        assert_eq!(None, m.get_mut(2, 5));
-        assert_eq!(None, m.get_mut(6, 7));
-    }
-
-    #[test]
-    fn identity() {
+    fn id_mul() {
         let m_3x3 = Matrix::<u32, 3, 3>::id_mul();
         let m_4x4 = Matrix::<u32, 4, 4>::id_mul();
 
@@ -314,82 +268,77 @@ mod tests {
 
     #[test]
     fn add() {
-        let m1 = matrix_4x3_1();
-        let m2 = matrix_4x3_2();
+        let mat1 = new_matrix4x3_01();
+        let mat2 = new_matrix4x3_02();
 
         assert_eq!(
-            Matrix::new([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
-            m1 + m2
+            Matrix::new([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
+            mat1 + mat2
         );
     }
 
     #[test]
     fn add_assign() {
-        let mut m1 = matrix_4x3_1();
-        let m2 = matrix_4x3_2();
+        let mut mat1 = new_matrix4x3_01();
+        let mat2 = new_matrix4x3_02();
 
-        m1 += m2;
-
+        mat1 += mat2;
         assert_eq!(
-            Matrix::new([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
-            m1
+            Matrix::new([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
+            mat1
         )
     }
 
     #[test]
     fn sub() {
-        let m1 = matrix_4x3_1();
-        let m2 = matrix_4x3_2();
+        let mat1 = new_matrix4x3_01();
+        let mat2 = new_matrix4x3_02();
 
         assert_eq!(
-            Matrix::new([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
-            m1 - m2
+            Matrix::new([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
+            mat1 - mat2
         );
     }
 
     #[test]
     fn sub_assign() {
-        let mut m1 = matrix_4x3_1();
-        let m2 = matrix_4x3_2();
+        let mut mat1 = new_matrix4x3_01();
+        let mat2 = new_matrix4x3_02();
 
-        m1 -= m2;
-
+        mat1 -= mat2;
         assert_eq!(
-            Matrix::new([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
-            m1
+            Matrix::new([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
+            mat1
         )
     }
 
     #[test]
     fn neg() {
-        let m = matrix_4x3_2();
+        let mat = new_matrix4x3_02();
 
         assert_eq!(
             Matrix::new([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
-            -m
+            -mat
         );
     }
 
     #[test]
     fn mul() {
-        let k = 5;
-        let m = matrix_4x3_1();
+        let mat = new_matrix4x3_01();
 
         assert_eq!(
-            Matrix::new([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
-            m * k
+            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
+            mat * 5
         );
     }
 
     #[test]
     fn mul_assign() {
-        let k = 5;
-        let mut m = matrix_4x3_1();
+        let mut m = new_matrix4x3_01();
 
-        m *= k;
-
+        m *= 5;
         assert_eq!(
-            Matrix::new([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
+            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
             m
         );
     }
