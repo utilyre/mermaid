@@ -1,4 +1,7 @@
-use crate::identity::{AdditiveIdentity, MultiplicativeIdentity};
+use crate::{
+    identity::{AdditiveIdentity, MultiplicativeIdentity},
+    vec2::Vec2,
+};
 use std::{
     array,
     ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign},
@@ -38,6 +41,12 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
 
     pub fn get_mut(&mut self, i: usize, j: usize) -> Option<&mut T> {
         self.0.get_mut(i).and_then(|row| row.get_mut(j))
+    }
+}
+
+impl From<Vec2> for Matrix<f32, 2, 1> {
+    fn from(value: Vec2) -> Self {
+        Matrix::from_rows([[value.x], [value.y]])
     }
 }
 
