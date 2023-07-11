@@ -21,6 +21,10 @@ impl Vec3 {
         (self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt()
     }
 
+    pub fn normalize(&mut self) {
+        *self *= 1.0 / self.len();
+    }
+
     pub fn dot(self, rhs: Self) -> f32 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
@@ -160,6 +164,14 @@ mod tests {
     fn len() {
         let v = Vec3::new(3.0, 4.0, 12.0);
         assert_eq!(13.0, v.len());
+    }
+
+    #[test]
+    fn normalize() {
+        let mut v = Vec3::new(3.0, 0.0, 4.0);
+
+        v.normalize();
+        assert_eq!(Vec3::new(0.6, 0.0, 0.8), v);
     }
 
     #[test]
