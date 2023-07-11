@@ -1,6 +1,7 @@
 use crate::{
     identity::{IdAdd, IdMul},
     vec2::Vec2,
+    vec3::Vec3,
 };
 use std::{
     array,
@@ -59,6 +60,12 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
         Matrix::new([[value.x], [value.y]])
+    }
+}
+
+impl From<Vec3> for Matrix<f32, 3, 1> {
+    fn from(value: Vec3) -> Self {
+        Matrix::new([[value.x], [value.y], [value.z]])
     }
 }
 
