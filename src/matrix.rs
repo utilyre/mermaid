@@ -20,6 +20,10 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         unimplemented!()
     }
 
+    pub fn into_rows(self) -> [[T; N]; M] {
+        self.0
+    }
+
     pub fn row(&self, i: usize) -> Option<[&T; N]> {
         self.0.get(i).map(|row| row.each_ref())
     }

@@ -1,3 +1,4 @@
+use crate::matrix::Matrix;
 use std::ops::Mul;
 
 pub struct Vec2 {
@@ -28,6 +29,13 @@ impl From<(f32, f32)> for Vec2 {
 impl From<[f32; 2]> for Vec2 {
     fn from(value: [f32; 2]) -> Self {
         Vec2::new(value[0], value[1])
+    }
+}
+
+impl From<Matrix<f32, 2, 1>> for Vec2 {
+    fn from(value: Matrix<f32, 2, 1>) -> Self {
+        let rows = value.into_rows();
+        Vec2::new(rows[0][0], rows[1][0])
     }
 }
 
