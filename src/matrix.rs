@@ -7,6 +7,18 @@ use std::{
     ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
+pub type Matrix1x1<T> = Matrix<T, 1, 1>;
+pub type Matrix1x2<T> = Matrix<T, 1, 2>;
+pub type Matrix1x3<T> = Matrix<T, 1, 3>;
+
+pub type Matrix2x1<T> = Matrix<T, 2, 1>;
+pub type Matrix2x2<T> = Matrix<T, 2, 2>;
+pub type Matrix2x3<T> = Matrix<T, 2, 3>;
+
+pub type Matrix3x1<T> = Matrix<T, 3, 1>;
+pub type Matrix3x2<T> = Matrix<T, 3, 2>;
+pub type Matrix3x3<T> = Matrix<T, 3, 3>;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
