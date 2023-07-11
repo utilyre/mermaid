@@ -8,11 +8,11 @@ use std::{
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
-    pub const fn with_rows(rows: [[T; N]; M]) -> Self {
+    pub const fn from_rows(rows: [[T; N]; M]) -> Self {
         Self(rows)
     }
 
-    pub const fn with_cols(_cols: [[T; M]; N]) -> Self {
+    pub const fn from_cols(_cols: [[T; M]; N]) -> Self {
         todo!()
     }
 
@@ -46,7 +46,7 @@ where
     T: AdditiveIdentity,
 {
     fn additive_identity() -> Self {
-        Self::with_rows(array::from_fn(|_| {
+        Self::from_rows(array::from_fn(|_| {
             array::from_fn(|_| T::additive_identity())
         }))
     }
@@ -57,7 +57,7 @@ where
     T: AdditiveIdentity + MultiplicativeIdentity,
 {
     fn multiplicative_identity() -> Self {
-        Self::with_rows(array::from_fn(|i| {
+        Self::from_rows(array::from_fn(|i| {
             array::from_fn(|j| {
                 if i == j {
                     T::multiplicative_identity()
@@ -194,7 +194,7 @@ mod tests {
 
     #[rustfmt::skip]
     fn matrix_4x3_1() -> Matrix<i32, 4, 3> {
-        Matrix::with_rows([
+        Matrix::from_rows([
             [1,  2,  3 ],
             [4,  5,  6 ],
             [7,  8,  9 ],
@@ -204,7 +204,7 @@ mod tests {
 
     #[rustfmt::skip]
     fn matrix_4x3_2() -> Matrix<i32, 4, 3> {
-        Matrix::with_rows([
+        Matrix::from_rows([
             [1,  0,  5 ],
             [3,  2, -1 ],
             [3, -2,  7 ],
@@ -287,9 +287,9 @@ mod tests {
         let m_3x3 = Matrix::<u32, 3, 3>::multiplicative_identity();
         let m_4x4 = Matrix::<u32, 4, 4>::multiplicative_identity();
 
-        assert_eq!(Matrix::with_rows([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), m_3x3);
+        assert_eq!(Matrix::from_rows([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), m_3x3);
         assert_eq!(
-            Matrix::with_rows([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+            Matrix::from_rows([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
             m_4x4
         );
     }
@@ -300,7 +300,7 @@ mod tests {
         let m2 = matrix_4x3_2();
 
         assert_eq!(
-            Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
+            Matrix::from_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
             m1 + m2
         );
     }
@@ -313,7 +313,7 @@ mod tests {
         m1 += m2;
 
         assert_eq!(
-            Matrix::with_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
+            Matrix::from_rows([[2, 2, 8], [7, 7, 5], [10, 6, 16], [12, 11, 20]]),
             m1
         )
     }
@@ -324,7 +324,7 @@ mod tests {
         let m2 = matrix_4x3_2();
 
         assert_eq!(
-            Matrix::with_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
+            Matrix::from_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
             m1 - m2
         );
     }
@@ -337,7 +337,7 @@ mod tests {
         m1 -= m2;
 
         assert_eq!(
-            Matrix::with_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
+            Matrix::from_rows([[0, 2, -2], [1, 3, 7], [4, 10, 2], [8, 11, 4]]),
             m1
         )
     }
@@ -347,7 +347,7 @@ mod tests {
         let m = matrix_4x3_2();
 
         assert_eq!(
-            Matrix::with_rows([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
+            Matrix::from_rows([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
             -m
         );
     }
@@ -358,7 +358,7 @@ mod tests {
         let m = matrix_4x3_1();
 
         assert_eq!(
-            Matrix::with_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
+            Matrix::from_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
             m * k
         );
     }
@@ -371,7 +371,7 @@ mod tests {
         m *= k;
 
         assert_eq!(
-            Matrix::with_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
+            Matrix::from_rows([[5, 10, 15], [20, 25, 30], [35, 40, 45], [50, 55, 60],]),
             m
         );
     }
