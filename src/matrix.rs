@@ -87,7 +87,7 @@ where
 impl<T, U, V, const M: usize, const N: usize> Add<Matrix<U, M, N>> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Add<&'b U, Output = V>,
-    V: Copy + IdAdd,
+    V: IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
@@ -96,7 +96,9 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                output.0[i][j] = &self.0[i][j] + &rhs.0[i][j];
+                *output.get_mut(i, j).expect("is not out of bounds") =
+                    self.get(i, j).expect("is not out of bounds")
+                        + rhs.get(i, j).expect("is not out of bounds");
             }
         }
 
@@ -111,7 +113,8 @@ where
     fn add_assign(&mut self, rhs: Matrix<U, M, N>) {
         for i in 0..M {
             for j in 0..N {
-                self.0[i][j] += &rhs.0[i][j];
+                *self.get_mut(i, j).expect("is not out of bounds") +=
+                    rhs.get(i, j).expect("is not out of bounds");
             }
         }
     }
@@ -120,7 +123,7 @@ where
 impl<T, U, V, const M: usize, const N: usize> Sub<Matrix<U, M, N>> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Sub<&'b U, Output = V>,
-    V: Copy + IdAdd,
+    V: IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
@@ -129,7 +132,9 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                output.0[i][j] = &self.0[i][j] - &rhs.0[i][j];
+                *output.get_mut(i, j).expect("is not out of bounds") =
+                    self.get(i, j).expect("is not out of bounds")
+                        - rhs.get(i, j).expect("is not out of bounds");
             }
         }
 
@@ -144,7 +149,8 @@ where
     fn sub_assign(&mut self, rhs: Matrix<U, M, N>) {
         for i in 0..M {
             for j in 0..N {
-                self.0[i][j] -= &rhs.0[i][j];
+                *self.get_mut(i, j).expect("is not out of bounds") -=
+                    rhs.get(i, j).expect("is not out of bounds");
             }
         }
     }
@@ -153,7 +159,7 @@ where
 impl<T, U, const M: usize, const N: usize> Neg for Matrix<T, M, N>
 where
     for<'a> &'a T: Neg<Output = U>,
-    U: Copy + IdAdd,
+    U: IdAdd,
 {
     type Output = Matrix<U, M, N>;
 
@@ -162,7 +168,8 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                output.0[i][j] = -&self.0[i][j];
+                *output.get_mut(i, j).expect("is not out of bounds") =
+                    -self.get(i, j).expect("is not out of bounds");
             }
         }
 
@@ -173,7 +180,7 @@ where
 impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
-    V: Copy + IdAdd,
+    V: IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
@@ -182,7 +189,8 @@ where
 
         for i in 0..M {
             for j in 0..N {
-                output.0[i][j] = &self.0[i][j] * &rhs;
+                *output.get_mut(i, j).expect("is not out of bounds") =
+                    self.get(i, j).expect("is not out of bounds") * &rhs;
             }
         }
 
@@ -197,7 +205,7 @@ where
     fn mul_assign(&mut self, rhs: U) {
         for i in 0..M {
             for j in 0..N {
-                self.0[i][j] *= &rhs;
+                *self.get_mut(i, j).expect("is not out of bounds") *= &rhs;
             }
         }
     }
