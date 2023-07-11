@@ -1,5 +1,5 @@
 use crate::matrix::Matrix;
-use std::ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Vec2 {
@@ -39,6 +39,34 @@ impl From<Matrix<f32, 2, 1>> for Vec2 {
             *value.get(0, 0).expect("is not out of bounds"),
             *value.get(1, 0).expect("is not out of bounds"),
         )
+    }
+}
+
+impl Index<usize> for Vec2 {
+    type Output = f32;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            _ => panic!(
+                "index out of bounds: the len is 2 but the index is {}",
+                index
+            ),
+        }
+    }
+}
+
+impl IndexMut<usize> for Vec2 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => panic!(
+                "index out of bounds: the len is 2 but the index is {}",
+                index
+            ),
+        }
     }
 }
 
