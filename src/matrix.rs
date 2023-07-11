@@ -63,9 +63,28 @@ impl From<Vec2> for Matrix<f32, 2, 1> {
     }
 }
 
+impl<const N: usize> From<[Vec2; N]> for Matrix<f32, 2, N> {
+    fn from(value: [Vec2; N]) -> Self {
+        Matrix::new([
+            array::from_fn(|i| value[i].x),
+            array::from_fn(|i| value[i].y),
+        ])
+    }
+}
+
 impl From<Vec3> for Matrix<f32, 3, 1> {
     fn from(value: Vec3) -> Self {
         Matrix::new([[value.x], [value.y], [value.z]])
+    }
+}
+
+impl<const N: usize> From<[Vec3; N]> for Matrix<f32, 3, N> {
+    fn from(value: [Vec3; N]) -> Self {
+        Matrix::new([
+            array::from_fn(|i| value[i].x),
+            array::from_fn(|i| value[i].y),
+            array::from_fn(|i| value[i].z),
+        ])
     }
 }
 
@@ -271,6 +290,27 @@ mod tests {
 
         assert_eq!(Some(&1), m.get(0, 2));
         assert_eq!(Some(&5), m.get(3, 2));
+    }
+
+    #[test]
+    fn from_vec2() {
+        let mat = Matrix::from([Vec2::new(9.0, 3.0), Vec2::new(2.0, 7.0)]);
+
+        assert_eq!(Matrix::new([[9.0, 2.0], [3.0, 7.0],]), mat);
+    }
+
+    #[test]
+    fn from_vec3() {
+        let mat = Matrix::from([
+            Vec3::new(9.0, 3.0, 4.0),
+            Vec3::new(2.0, 7.0, 8.0),
+            Vec3::new(5.0, 6.0, 0.0),
+        ]);
+
+        assert_eq!(
+            Matrix::new([[9.0, 2.0, 5.0], [3.0, 7.0, 6.0], [4.0, 8.0, 0.0],]),
+            mat
+        );
     }
 
     #[test]
