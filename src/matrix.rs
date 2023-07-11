@@ -15,7 +15,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         Self(rows)
     }
 
-    pub fn into_rows(self) -> [[T; N]; M] {
+    pub fn into_inner(self) -> [[T; N]; M] {
         self.0
     }
 

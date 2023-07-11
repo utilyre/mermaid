@@ -34,8 +34,8 @@ impl From<[f32; 2]> for Vec2 {
 
 impl From<Matrix<f32, 2, 1>> for Vec2 {
     fn from(value: Matrix<f32, 2, 1>) -> Self {
-        let rows = value.into_rows();
-        Vec2::new(rows[0][0], rows[1][0])
+        let value = value.into_inner();
+        Vec2::new(value[0][0], value[1][0])
     }
 }
 
