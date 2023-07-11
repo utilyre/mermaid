@@ -5,7 +5,7 @@ use crate::{
 };
 use std::{
     array,
-    ops::{Add, AddAssign, Mul, MulAssign, Neg, Sub, SubAssign},
+    ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 
 pub type Matrix1x1<T> = Matrix<T, 1, 1>;
@@ -165,6 +165,30 @@ where
         Self::new(array::from_fn(|i| {
             array::from_fn(|j| if i == j { T::id_mul() } else { T::id_add() })
         }))
+    }
+}
+
+impl<T, const M: usize, const N: usize> Index<(usize, usize)> for Matrix<T, M, N> {
+    type Output = T;
+
+    fn index(&self, index: (usize, usize)) -> &Self::Output {
+        self.get(index.0, index.1).unwrap_or_else(|| {
+            panic!(
+                "index out of bounds: the len is ({}, {}) but the index is ({}, {})",
+                M, N, index.0, index.1
+            )
+        })
+    }
+}
+
+impl<T, const M: usize, const N: usize> IndexMut<(usize, usize)> for Matrix<T, M, N> {
+    fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
+        self.get_mut(index.0, index.1).unwrap_or_else(|| {
+            panic!(
+                "index out of bounds: the len is ({}, {}) but the index is ({}, {})",
+                M, N, index.0, index.1
+            )
+        })
     }
 }
 
