@@ -16,7 +16,8 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub const fn from_cols(_cols: [[T; M]; N]) -> Self {
-        todo!()
+        // TODO: needs unsafe code
+        unimplemented!()
     }
 
     pub fn row(&self, i: usize) -> Option<[&T; N]> {
