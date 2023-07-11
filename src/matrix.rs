@@ -79,9 +79,7 @@ where
 impl<T> Matrix<T, 3, 3>
 where
     for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
-    for<'a> T: Mul<&'a T, Output = T>,
-    T: Add<T, Output = T>,
-    T: Sub<T, Output = T>,
+    for<'a> T: Add<T, Output = T> + Sub<T, Output = T> + Mul<&'a T, Output = T>,
 {
     pub fn det(&self) -> T {
         &self[(0, 0)] * &self[(1, 1)] * &self[(2, 2)]
