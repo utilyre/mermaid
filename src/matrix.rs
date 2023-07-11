@@ -1,5 +1,5 @@
 use crate::{
-    identity::{AdditiveIdentity, MultiplicativeIdentity},
+    identity::{IdAdd, IdMul},
     vec2::Vec2,
 };
 use std::{
@@ -64,30 +64,22 @@ where
     }
 }
 
-impl<T, const M: usize, const N: usize> AdditiveIdentity for Matrix<T, M, N>
+impl<T, const M: usize, const N: usize> IdAdd for Matrix<T, M, N>
 where
-    T: AdditiveIdentity,
+    T: IdAdd,
 {
-    fn additive_identity() -> Self {
-        Self::from_rows(array::from_fn(|_| {
-            array::from_fn(|_| T::additive_identity())
-        }))
+    fn id_add() -> Self {
+        Self::from_rows(array::from_fn(|_| array::from_fn(|_| T::id_add())))
     }
 }
 
-impl<T, const M: usize, const N: usize> MultiplicativeIdentity for Matrix<T, M, N>
+impl<T, const M: usize, const N: usize> IdMul for Matrix<T, M, N>
 where
-    T: AdditiveIdentity + MultiplicativeIdentity,
+    T: IdAdd + IdMul,
 {
-    fn multiplicative_identity() -> Self {
+    fn id_mul() -> Self {
         Self::from_rows(array::from_fn(|i| {
-            array::from_fn(|j| {
-                if i == j {
-                    T::multiplicative_identity()
-                } else {
-                    T::additive_identity()
-                }
-            })
+            array::from_fn(|j| if i == j { T::id_mul() } else { T::id_add() })
         }))
     }
 }
@@ -95,12 +87,12 @@ where
 impl<T, U, V, const M: usize, const N: usize> Add<Matrix<U, M, N>> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Add<&'b U, Output = V>,
-    V: Copy + AdditiveIdentity,
+    V: Copy + IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
     fn add(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        let mut output = Self::Output::additive_identity();
+        let mut output = Self::Output::id_add();
 
         for i in 0..M {
             for j in 0..N {
@@ -128,12 +120,12 @@ where
 impl<T, U, V, const M: usize, const N: usize> Sub<Matrix<U, M, N>> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Sub<&'b U, Output = V>,
-    V: Copy + AdditiveIdentity,
+    V: Copy + IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
     fn sub(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        let mut output = Self::Output::additive_identity();
+        let mut output = Self::Output::id_add();
 
         for i in 0..M {
             for j in 0..N {
@@ -161,12 +153,12 @@ where
 impl<T, U, const M: usize, const N: usize> Neg for Matrix<T, M, N>
 where
     for<'a> &'a T: Neg<Output = U>,
-    U: Copy + AdditiveIdentity,
+    U: Copy + IdAdd,
 {
     type Output = Matrix<U, M, N>;
 
     fn neg(self) -> Self::Output {
-        let mut output = Self::Output::additive_identity();
+        let mut output = Self::Output::id_add();
 
         for i in 0..M {
             for j in 0..N {
@@ -181,12 +173,12 @@ where
 impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
-    V: Copy + AdditiveIdentity,
+    V: Copy + IdAdd,
 {
     type Output = Matrix<V, M, N>;
 
     fn mul(self, rhs: U) -> Self::Output {
-        let mut output = Self::Output::additive_identity();
+        let mut output = Self::Output::id_add();
 
         for i in 0..M {
             for j in 0..N {
@@ -307,8 +299,8 @@ mod tests {
 
     #[test]
     fn identity() {
-        let m_3x3 = Matrix::<u32, 3, 3>::multiplicative_identity();
-        let m_4x4 = Matrix::<u32, 4, 4>::multiplicative_identity();
+        let m_3x3 = Matrix::<u32, 3, 3>::id_mul();
+        let m_4x4 = Matrix::<u32, 4, 4>::id_mul();
 
         assert_eq!(Matrix::from_rows([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), m_3x3);
         assert_eq!(
