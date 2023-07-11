@@ -41,6 +41,15 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
+impl<T, const M: usize, const N: usize> Default for Matrix<T, M, N>
+where
+    T: Default,
+{
+    fn default() -> Self {
+        Self::from_rows(array::from_fn(|_| array::from_fn(|_| T::default())))
+    }
+}
+
 impl<T, const M: usize, const N: usize> AdditiveIdentity for Matrix<T, M, N>
 where
     T: AdditiveIdentity,
