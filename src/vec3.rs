@@ -29,6 +29,10 @@ impl Vec3 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
+    pub fn proj(self, base: Self) -> Self {
+        (self.dot(base) / base.len().powi(2)) * base
+    }
+
     pub fn cross(self, rhs: Self) -> Vec3 {
         Vec3::new(
             self.y * rhs.z - self.z * rhs.y,
@@ -180,6 +184,14 @@ mod tests {
         let v2 = Vec3::new(8.0, 9.0, 2.0);
 
         assert_eq!(68.0, v1.dot(v2));
+    }
+
+    #[test]
+    fn proj() {
+        let v1 = Vec3::new(2.0, 5.0, 7.0);
+        let v2 = Vec3::new(0.0, 3.0, 4.0);
+
+        assert_eq!(Vec3::new(0.0, 5.16, 6.88), v1.proj(v2));
     }
 
     #[test]

@@ -26,6 +26,10 @@ impl Vec2 {
     pub fn dot(&self, rhs: Self) -> f32 {
         self.x * rhs.x + self.y * rhs.y
     }
+
+    pub fn proj(self, base: Self) -> Self {
+        (self.dot(base) / base.len().powi(2)) * base
+    }
 }
 
 impl IdAdd for Vec2 {
@@ -165,6 +169,14 @@ mod tests {
         let v2 = Vec2::new(8.0, 9.0);
 
         assert_eq!(62.0, v1.dot(v2));
+    }
+
+    #[test]
+    fn proj() {
+        let v1 = Vec2::new(2.0, 5.0);
+        let v2 = Vec2::new(3.0, 4.0);
+
+        assert_eq!(Vec2::new(3.12, 4.16), v1.proj(v2));
     }
 
     #[test]
