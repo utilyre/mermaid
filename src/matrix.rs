@@ -159,7 +159,7 @@ where
     }
 }
 
-impl<T, const M: usize, const N: usize> IdMul for Matrix<T, M, N>
+impl<T, const M: usize> IdMul for Matrix<T, M, M>
 where
     T: IdAdd + IdMul,
 {
