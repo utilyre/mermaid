@@ -11,14 +11,32 @@ use std::{
 pub type Matrix1x1<T> = Matrix<T, 1, 1>;
 pub type Matrix1x2<T> = Matrix<T, 1, 2>;
 pub type Matrix1x3<T> = Matrix<T, 1, 3>;
+pub type Matrix1x4<T> = Matrix<T, 1, 4>;
+pub type Matrix1x5<T> = Matrix<T, 1, 5>;
 
 pub type Matrix2x1<T> = Matrix<T, 2, 1>;
 pub type Matrix2x2<T> = Matrix<T, 2, 2>;
 pub type Matrix2x3<T> = Matrix<T, 2, 3>;
+pub type Matrix2x4<T> = Matrix<T, 2, 4>;
+pub type Matrix2x5<T> = Matrix<T, 2, 5>;
 
 pub type Matrix3x1<T> = Matrix<T, 3, 1>;
 pub type Matrix3x2<T> = Matrix<T, 3, 2>;
 pub type Matrix3x3<T> = Matrix<T, 3, 3>;
+pub type Matrix3x4<T> = Matrix<T, 3, 4>;
+pub type Matrix3x5<T> = Matrix<T, 3, 5>;
+
+pub type Matrix4x1<T> = Matrix<T, 4, 1>;
+pub type Matrix4x2<T> = Matrix<T, 4, 2>;
+pub type Matrix4x3<T> = Matrix<T, 4, 3>;
+pub type Matrix4x4<T> = Matrix<T, 4, 4>;
+pub type Matrix4x5<T> = Matrix<T, 4, 5>;
+
+pub type Matrix5x1<T> = Matrix<T, 5, 1>;
+pub type Matrix5x2<T> = Matrix<T, 5, 2>;
+pub type Matrix5x3<T> = Matrix<T, 5, 3>;
+pub type Matrix5x4<T> = Matrix<T, 5, 4>;
+pub type Matrix5x5<T> = Matrix<T, 5, 5>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
@@ -294,7 +312,7 @@ mod tests {
     use super::*;
 
     #[rustfmt::skip]
-    fn new_matrix4x3_01() -> Matrix<i32, 4, 3> {
+    fn new_matrix4x3_01() -> Matrix4x3<i32> {
         Matrix::new([
             [ 8,  6, -1],
             [ 0,  7,  2],
@@ -304,7 +322,7 @@ mod tests {
     }
 
     #[rustfmt::skip]
-    fn new_matrix4x3_02() -> Matrix<i32, 4, 3> {
+    fn new_matrix4x3_02() -> Matrix4x3<i32> {
         Matrix::new([
             [1,  0,  5 ],
             [3,  2, -1 ],
@@ -314,7 +332,7 @@ mod tests {
     }
 
     #[rustfmt::skip]
-    fn new_matrix3x2_01() -> Matrix<i32, 3, 2> {
+    fn new_matrix3x2_01() -> Matrix3x2<i32> {
         Matrix::new([
             [ 3, -1],
             [ 2, -3],
