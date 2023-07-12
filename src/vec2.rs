@@ -28,6 +28,12 @@ impl Vec2 {
     }
 }
 
+impl IdAdd for Vec2 {
+    fn id_add() -> Self {
+        Self::new(0.0, 0.0)
+    }
+}
+
 impl From<(f32, f32)> for Vec2 {
     fn from(value: (f32, f32)) -> Self {
         Self::new(value.0, value.1)
@@ -43,12 +49,6 @@ impl From<[f32; 2]> for Vec2 {
 impl From<Matrix<f32, 2, 1>> for Vec2 {
     fn from(value: Matrix<f32, 2, 1>) -> Self {
         Self::new(value[(0, 0)], value[(1, 0)])
-    }
-}
-
-impl IdAdd for Vec2 {
-    fn id_add() -> Self {
-        Self::new(0.0, 0.0)
     }
 }
 

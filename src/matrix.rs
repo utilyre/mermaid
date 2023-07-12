@@ -110,6 +110,35 @@ where
     }
 }
 
+impl<T, const M: usize, const N: usize> Default for Matrix<T, M, N>
+where
+    T: Default,
+{
+    fn default() -> Self {
+        Self::new(array::from_fn(|_| array::from_fn(|_| T::default())))
+    }
+}
+
+impl<T, const M: usize, const N: usize> IdAdd for Matrix<T, M, N>
+where
+    T: IdAdd,
+{
+    fn id_add() -> Self {
+        Self::new(array::from_fn(|_| array::from_fn(|_| T::id_add())))
+    }
+}
+
+impl<T, const M: usize> IdMul for Matrix<T, M, M>
+where
+    T: IdAdd + IdMul,
+{
+    fn id_mul() -> Self {
+        Self::new(array::from_fn(|i| {
+            array::from_fn(|j| if i == j { T::id_mul() } else { T::id_add() })
+        }))
+    }
+}
+
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
         Matrix::new([[value.x], [value.y]])
@@ -138,35 +167,6 @@ impl<const N: usize> From<[Vec3; N]> for Matrix<f32, 3, N> {
             array::from_fn(|i| value[i].y),
             array::from_fn(|i| value[i].z),
         ])
-    }
-}
-
-impl<T, const M: usize, const N: usize> Default for Matrix<T, M, N>
-where
-    T: Default,
-{
-    fn default() -> Self {
-        Self::new(array::from_fn(|_| array::from_fn(|_| T::default())))
-    }
-}
-
-impl<T, const M: usize, const N: usize> IdAdd for Matrix<T, M, N>
-where
-    T: IdAdd,
-{
-    fn id_add() -> Self {
-        Self::new(array::from_fn(|_| array::from_fn(|_| T::id_add())))
-    }
-}
-
-impl<T, const M: usize> IdMul for Matrix<T, M, M>
-where
-    T: IdAdd + IdMul,
-{
-    fn id_mul() -> Self {
-        Self::new(array::from_fn(|i| {
-            array::from_fn(|j| if i == j { T::id_mul() } else { T::id_add() })
-        }))
     }
 }
 
