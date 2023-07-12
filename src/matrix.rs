@@ -297,12 +297,12 @@ where
 
     fn mul(self, rhs: Matrix<U, P, N>) -> Self::Output {
         Self::Output::id_add().map(|i, j, _| {
-            let mut x = W::id_add();
+            let mut acc = W::id_add();
             for k in 0..P {
-                x = x + &self[(i, k)] * &rhs[(k, j)];
+                acc = acc + &self[(i, k)] * &rhs[(k, j)];
             }
 
-            x
+            acc
         })
     }
 }
