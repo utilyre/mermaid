@@ -33,8 +33,8 @@ impl Vec3 {
         (self.dot(base) / base.len().powi(2)) * base
     }
 
-    pub fn cross(self, rhs: Self) -> Vec3 {
-        Vec3::new(
+    pub fn cross(self, rhs: Self) -> Self {
+        Self::new(
             self.y * rhs.z - self.z * rhs.y,
             self.z * rhs.x - self.x * rhs.z,
             self.x * rhs.y - self.y * rhs.x,
