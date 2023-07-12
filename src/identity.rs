@@ -1,29 +1,12 @@
+#[macro_use]
+mod macros;
+
 pub trait IdAdd {
     fn id_add() -> Self;
 }
 
 pub trait IdMul {
     fn id_mul() -> Self;
-}
-
-macro_rules! id_impl {
-    (
-        Self = $Self:ty,
-        id_add = $id_add:literal,
-        id_mul = $id_mul:literal,
-    ) => {
-        impl IdAdd for $Self {
-            fn id_add() -> Self {
-                $id_add
-            }
-        }
-
-        impl IdMul for $Self {
-            fn id_mul() -> Self {
-                $id_mul
-            }
-        }
-    };
 }
 
 id_impl! {
