@@ -1,5 +1,5 @@
 use super::Matrix;
-use crate::{identity::IdAdd, inverse::Inverse};
+use crate::{identity::IdAdd, recip::Recip};
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::ptr;
 
@@ -128,22 +128,22 @@ where
     }
 }
 
-impl<T> Inverse for Matrix<T, 1, 1>
+impl<T> Recip for Matrix<T, 1, 1>
 where
-    T: Inverse,
+    T: Recip,
 {
-    fn inverse(self) -> Self {
-        Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.inverse()]])
+    fn recip(self) -> Self {
+        Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.recip()]])
     }
 }
 
-impl<T> Inverse for Matrix<T, 2, 2>
+impl<T> Recip for Matrix<T, 2, 2>
 where
     for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
-    T: Sub<T, Output = T> + Neg<Output = T> + Inverse + IdAdd,
+    T: Sub<T, Output = T> + Neg<Output = T> + Recip + IdAdd,
 {
-    fn inverse(self) -> Self {
-        let factor = self.det().inverse();
+    fn recip(self) -> Self {
+        let factor = self.det().recip();
 
         Self::new([
             [
@@ -247,7 +247,7 @@ mod tests {
     #[test]
     fn inverse1x1() {
         let mat = Matrix::new([[5.0]]);
-        assert_eq!(Matrix::new([[0.2]]), mat.inverse());
+        assert_eq!(Matrix::new([[0.2]]), mat.recip());
     }
 
     #[test]
@@ -256,7 +256,7 @@ mod tests {
         assert_eq!(40.0, mat.det());
         assert_eq!(
             Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
-            mat.inverse()
+            mat.recip()
                 .map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );
     }
