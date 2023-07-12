@@ -79,6 +79,21 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
             }
         }
     }
+
+    pub fn scale<U, V>(&self, factor: U) -> Matrix<V, M, N>
+    where
+        for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
+        V: IdAdd,
+    {
+        Matrix::<V, M, N>::id_add().map(|i, j, _| &self[(i, j)] * &factor)
+    }
+
+    pub fn scale_mut<U>(&mut self, factor: U)
+    where
+        for<'a> T: MulAssign<&'a U>,
+    {
+        self.map_mut(|_, _, x| *x *= &factor);
+    }
 }
 
 impl<T> Matrix<T, 1, 1>
@@ -253,27 +268,6 @@ where
     }
 }
 
-impl<T, U, V, const M: usize, const N: usize> Mul<U> for Matrix<T, M, N>
-where
-    for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
-    V: IdAdd,
-{
-    type Output = Matrix<V, M, N>;
-
-    fn mul(self, rhs: U) -> Self::Output {
-        Self::Output::id_add().map(|i, j, _| &self[(i, j)] * &rhs)
-    }
-}
-
-impl<T, U, const M: usize, const N: usize> MulAssign<U> for Matrix<T, M, N>
-where
-    for<'a> T: MulAssign<&'a U>,
-{
-    fn mul_assign(&mut self, rhs: U) {
-        self.map_mut(|_, _, x| *x *= &rhs);
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -320,6 +314,27 @@ mod tests {
 
         assert_eq!(Some(&1), m.get(0, 2));
         assert_eq!(Some(&5), m.get(3, 2));
+    }
+
+    #[test]
+    fn scale() {
+        let mat = new_matrix4x3_01();
+
+        assert_eq!(
+            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
+            mat.scale(5)
+        );
+    }
+
+    #[test]
+    fn scale_mut() {
+        let mut m = new_matrix4x3_01();
+
+        m.scale_mut(5);
+        assert_eq!(
+            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
+            m
+        );
     }
 
     #[test]
@@ -425,27 +440,6 @@ mod tests {
         assert_eq!(
             Matrix::new([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
             -mat
-        );
-    }
-
-    #[test]
-    fn mul() {
-        let mat = new_matrix4x3_01();
-
-        assert_eq!(
-            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
-            mat * 5
-        );
-    }
-
-    #[test]
-    fn mul_assign() {
-        let mut m = new_matrix4x3_01();
-
-        m *= 5;
-        assert_eq!(
-            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
-            m
         );
     }
 }
