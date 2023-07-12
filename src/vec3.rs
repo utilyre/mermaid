@@ -25,7 +25,7 @@ impl Vec3 {
         *self *= 1.0 / self.len();
     }
 
-    pub fn dot(self, rhs: Self) -> f32 {
+    pub fn dot(&self, rhs: Self) -> f32 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
 
