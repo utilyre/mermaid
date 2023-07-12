@@ -168,23 +168,18 @@ mod tests {
 
     #[test]
     fn scale() {
-        let mat = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
+        let mut mat = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
 
         assert_eq!(
             Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
-            mat.scale(5)
+            mat.clone().scale(5)
         );
-    }
-
-    #[test]
-    fn scale_mut() {
-        let mut mat = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
 
         mat.scale_mut(5);
         assert_eq!(
             Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
             mat
-        );
+        )
     }
 
     #[test]
