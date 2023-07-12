@@ -268,6 +268,27 @@ where
     }
 }
 
+impl<T, U, V, W, const M: usize, const N: usize, const P: usize> Mul<Matrix<U, P, N>>
+    for Matrix<T, M, P>
+where
+    for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
+    V: Add<V, Output = W>,
+    W: Add<V, Output = W> + IdAdd,
+{
+    type Output = Matrix<W, M, N>;
+
+    fn mul(self, rhs: Matrix<U, P, N>) -> Self::Output {
+        Self::Output::id_add().map(|i, j, _| {
+            let mut x = W::id_add();
+            for k in 0..P {
+                x = x + &self[(i, k)] * &rhs[(k, j)];
+            }
+
+            x
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -289,6 +310,15 @@ mod tests {
             [3,  2, -1 ],
             [3, -2,  7 ],
             [2,  0,  8 ],
+        ])
+    }
+
+    #[rustfmt::skip]
+    fn new_matrix3x2_01() -> Matrix<i32, 3, 2> {
+        Matrix::new([
+            [ 3, -1],
+            [ 2, -3],
+            [-2,  1],
         ])
     }
 
@@ -440,6 +470,17 @@ mod tests {
         assert_eq!(
             Matrix::new([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
             -mat
+        );
+    }
+
+    #[test]
+    fn mul() {
+        let mat1 = new_matrix4x3_01();
+        let mat2 = new_matrix3x2_01();
+
+        assert_eq!(
+            Matrix::new([[38, -27], [10, -19], [10, -11], [-25, 21],]),
+            mat1 * mat2
         );
     }
 }
