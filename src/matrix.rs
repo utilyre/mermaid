@@ -6,8 +6,8 @@ use crate::{
 use std::{array, ptr};
 
 pub mod aliases;
-pub mod dets;
-pub mod ops;
+mod dets;
+mod ops;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
