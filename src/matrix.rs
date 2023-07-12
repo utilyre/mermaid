@@ -148,6 +148,16 @@ where
     }
 }
 
+impl<T, const M: usize> Matrix<T, M, M>
+where
+    for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
+    T: Clone + Add<T, Output = T> + IdAdd,
+{
+    pub fn pow(self, exp: u32) -> Self {
+        (0..exp).fold(self.clone(), |acc, _| acc * self.clone())
+    }
+}
+
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
         Matrix::new([[value.x], [value.y]])
@@ -401,6 +411,12 @@ mod tests {
     fn det3x3() {
         let mat = Matrix::new([[0, -1, 2], [3, 2, 1], [-2, -3, 4]]);
         assert_eq!(4, mat.det());
+    }
+
+    #[test]
+    fn pow() {
+        let mat = Matrix::new([[1, 3], [2, -1]]);
+        assert_eq!(Matrix::new([[49, 0], [0, 49]]), mat.pow(3));
     }
 
     #[test]
