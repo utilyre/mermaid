@@ -55,6 +55,30 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn get_mut(&mut self, i: usize, j: usize) -> Option<&mut T> {
         self.0.get_mut(i).and_then(|row| row.get_mut(j))
     }
+
+    pub fn map<F>(mut self, f: F) -> Self
+    where
+        F: Fn(usize, usize, &T) -> T,
+    {
+        for i in 0..M {
+            for j in 0..N {
+                self[(i, j)] = f(i, j, &self[(i, j)]);
+            }
+        }
+
+        self
+    }
+
+    pub fn map_mut<F>(&mut self, f: F)
+    where
+        F: Fn(usize, usize, &mut T),
+    {
+        for i in 0..M {
+            for j in 0..N {
+                f(i, j, &mut self[(i, j)]);
+            }
+        }
+    }
 }
 
 impl<T> Matrix<T, 1, 1>
@@ -183,15 +207,7 @@ where
     type Output = Matrix<V, M, N>;
 
     fn add(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        let mut output = Self::Output::id_add();
-
-        for i in 0..M {
-            for j in 0..N {
-                output[(i, j)] = &self[(i, j)] + &rhs[(i, j)];
-            }
-        }
-
-        output
+        Self::Output::id_add().map(|i, j, _| &self[(i, j)] + &rhs[(i, j)])
     }
 }
 
@@ -200,11 +216,7 @@ where
     for<'a> T: AddAssign<&'a U>,
 {
     fn add_assign(&mut self, rhs: Matrix<U, M, N>) {
-        for i in 0..M {
-            for j in 0..N {
-                self[(i, j)] += &rhs[(i, j)];
-            }
-        }
+        self.map_mut(|i, j, x| *x += &rhs[(i, j)]);
     }
 }
 
@@ -216,15 +228,7 @@ where
     type Output = Matrix<V, M, N>;
 
     fn sub(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        let mut output = Self::Output::id_add();
-
-        for i in 0..M {
-            for j in 0..N {
-                output[(i, j)] = &self[(i, j)] - &rhs[(i, j)];
-            }
-        }
-
-        output
+        Self::Output::id_add().map(|i, j, _| &self[(i, j)] - &rhs[(i, j)])
     }
 }
 
@@ -233,11 +237,7 @@ where
     for<'a> T: SubAssign<&'a U>,
 {
     fn sub_assign(&mut self, rhs: Matrix<U, M, N>) {
-        for i in 0..M {
-            for j in 0..N {
-                self[(i, j)] -= &rhs[(i, j)];
-            }
-        }
+        self.map_mut(|i, j, x| *x -= &rhs[(i, j)]);
     }
 }
 
@@ -249,15 +249,7 @@ where
     type Output = Matrix<U, M, N>;
 
     fn neg(self) -> Self::Output {
-        let mut output = Self::Output::id_add();
-
-        for i in 0..M {
-            for j in 0..N {
-                output[(i, j)] = -&self[(i, j)];
-            }
-        }
-
-        output
+        Self::Output::id_add().map(|i, j, _| -&self[(i, j)])
     }
 }
 
@@ -269,15 +261,7 @@ where
     type Output = Matrix<V, M, N>;
 
     fn mul(self, rhs: U) -> Self::Output {
-        let mut output = Self::Output::id_add();
-
-        for i in 0..M {
-            for j in 0..N {
-                output[(i, j)] = &self[(i, j)] * &rhs;
-            }
-        }
-
-        output
+        Self::Output::id_add().map(|i, j, _| &self[(i, j)] * &rhs)
     }
 }
 
@@ -286,11 +270,7 @@ where
     for<'a> T: MulAssign<&'a U>,
 {
     fn mul_assign(&mut self, rhs: U) {
-        for i in 0..M {
-            for j in 0..N {
-                self[(i, j)] *= &rhs;
-            }
-        }
+        self.map_mut(|_, _, x| *x *= &rhs);
     }
 }
 
