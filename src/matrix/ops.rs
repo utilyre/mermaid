@@ -1,6 +1,7 @@
 use super::Matrix;
-use crate::identity::IdAdd;
+use crate::{identity::IdAdd, inverse::Inverse};
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::ptr;
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn scale<U, V>(&self, factor: U) -> Matrix<V, M, N>
@@ -127,6 +128,36 @@ where
     }
 }
 
+impl<T> Inverse for Matrix<T, 1, 1>
+where
+    T: Inverse,
+{
+    fn inverse(self) -> Self {
+        Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.inverse()]])
+    }
+}
+
+impl<T> Inverse for Matrix<T, 2, 2>
+where
+    for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
+    T: Sub<T, Output = T> + Neg<Output = T> + Inverse + IdAdd,
+{
+    fn inverse(self) -> Self {
+        let factor = self.det().inverse();
+
+        Self::new([
+            [
+                unsafe { ptr::read(&self[(1, 1)]) },
+                unsafe { ptr::read(&self[(0, 1)]) }.neg(),
+            ],
+            [unsafe { ptr::read(&self[(1, 0)]) }.neg(), unsafe {
+                ptr::read(&self[(0, 0)])
+            }],
+        ])
+        .scale(factor)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -210,6 +241,23 @@ mod tests {
         assert_eq!(
             Matrix::new([[38, -27], [10, -19], [10, -11], [-25, 21],]),
             mat1 * mat2
+        );
+    }
+
+    #[test]
+    fn inverse1x1() {
+        let mat = Matrix::new([[5.0]]);
+        assert_eq!(Matrix::new([[0.2]]), mat.inverse());
+    }
+
+    #[test]
+    fn inverse2x2() {
+        let mat = Matrix::new([[5.0, 6.0], [-5.0, 2.0]]);
+        assert_eq!(40.0, mat.det());
+        assert_eq!(
+            Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
+            mat.inverse()
+                .map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );
     }
 }
