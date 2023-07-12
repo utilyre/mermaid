@@ -6,6 +6,7 @@ use crate::{
 use std::{
     array,
     ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
+    ptr,
 };
 
 pub type Matrix1x1<T> = Matrix<T, 1, 1>;
@@ -76,11 +77,14 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
 
     pub fn map<F>(mut self, f: F) -> Self
     where
-        F: Fn(usize, usize, &T) -> T,
+        F: Fn(usize, usize, T) -> T,
     {
         for i in 0..M {
             for j in 0..N {
-                self[(i, j)] = f(i, j, &self[(i, j)]);
+                let x = f(i, j, unsafe { ptr::read(&self[(i, j)]) });
+                unsafe {
+                    ptr::write(&mut self[(i, j)], x);
+                }
             }
         }
 
@@ -306,13 +310,12 @@ where
     type Output = Matrix<W, M, N>;
 
     fn mul(self, rhs: Matrix<U, P, N>) -> Self::Output {
-        Self::Output::id_add().map(|i, j, _| {
-            let mut acc = W::id_add();
+        Self::Output::id_add().map(|i, j, mut x| {
             for k in 0..P {
-                acc = acc + &self[(i, k)] * &rhs[(k, j)];
+                x = x + &self[(i, k)] * &rhs[(k, j)];
             }
 
-            acc
+            x
         })
     }
 }
