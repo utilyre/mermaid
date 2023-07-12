@@ -6,7 +6,6 @@ use crate::{
 use std::{array, ptr};
 
 pub mod aliases;
-mod dets;
 mod ops;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
