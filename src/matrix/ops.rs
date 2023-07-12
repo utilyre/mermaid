@@ -128,20 +128,24 @@ where
     }
 }
 
-impl<T> Recip for Matrix<T, 1, 1>
+impl<T, U> Recip for Matrix<T, 1, 1>
 where
-    T: Recip,
+    T: Recip<Output = U>,
 {
+    type Output = Matrix<U, 1, 1>;
+
     fn recip(self) -> Self {
         Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.recip()]])
     }
 }
 
-impl<T> Recip for Matrix<T, 2, 2>
+impl<T, U> Recip for Matrix<T, 2, 2>
 where
     for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
-    T: Sub<T, Output = T> + Neg<Output = T> + Recip + IdAdd,
+    T: Sub<T, Output = T> + Neg<Output = T> + Recip<Output = U> + IdAdd,
 {
+    type Output = Matrix<U, 2, 2>;
+
     fn recip(self) -> Self {
         let factor = self.det().recip();
 
@@ -256,8 +260,7 @@ mod tests {
         assert_eq!(40.0, mat.det());
         assert_eq!(
             Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
-            mat.recip()
-                .map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
+            mat.recip().map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );
     }
 }
