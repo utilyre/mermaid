@@ -9,7 +9,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         for<'a, 'b> &'a T: Mul<&'b U, Output = V>,
         V: IdAdd,
     {
-        Matrix::<V, M, N>::id_add().map(|i, j, _| &self[(i, j)] * &factor)
+        Matrix::<V, M, N>::id_add().into_map(|i, j, _| &self[(i, j)] * &factor)
     }
 
     pub fn scale_mut<U>(&mut self, factor: U)
@@ -96,7 +96,7 @@ where
     type Output = Matrix<V, M, N>;
 
     fn add(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        Self::Output::id_add().map(|i, j, _| &self[(i, j)] + &rhs[(i, j)])
+        Self::Output::id_add().into_map(|i, j, _| &self[(i, j)] + &rhs[(i, j)])
     }
 }
 
@@ -117,7 +117,7 @@ where
     type Output = Matrix<V, M, N>;
 
     fn sub(self, rhs: Matrix<U, M, N>) -> Self::Output {
-        Self::Output::id_add().map(|i, j, _| &self[(i, j)] - &rhs[(i, j)])
+        Self::Output::id_add().into_map(|i, j, _| &self[(i, j)] - &rhs[(i, j)])
     }
 }
 
@@ -138,7 +138,7 @@ where
     type Output = Matrix<U, M, N>;
 
     fn neg(self) -> Self::Output {
-        Self::Output::id_add().map(|i, j, _| -&self[(i, j)])
+        Self::Output::id_add().into_map(|i, j, _| -&self[(i, j)])
     }
 }
 
@@ -152,7 +152,7 @@ where
     type Output = Matrix<W, M, N>;
 
     fn mul(self, rhs: Matrix<U, P, N>) -> Self::Output {
-        Self::Output::id_add().map(|i, j, mut x| {
+        Self::Output::id_add().into_map(|i, j, mut x| {
             for k in 0..P {
                 x = x + &self[(i, k)] * &rhs[(k, j)];
             }
@@ -307,7 +307,7 @@ mod tests {
         assert_eq!(40.0, mat.det());
         assert_eq!(
             Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
-            mat.recip().map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
+            mat.recip().into_map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );
     }
 }

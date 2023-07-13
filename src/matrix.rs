@@ -44,7 +44,18 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         self.0.get_mut(i).and_then(|row| row.get_mut(j))
     }
 
-    pub fn map<F>(mut self, f: F) -> Self
+    pub fn map_mut<F>(&mut self, f: F)
+    where
+        F: Fn(usize, usize, &mut T),
+    {
+        for i in 0..M {
+            for j in 0..N {
+                f(i, j, &mut self[(i, j)]);
+            }
+        }
+    }
+
+    pub fn into_map<F>(mut self, f: F) -> Self
     where
         F: Fn(usize, usize, T) -> T,
     {
@@ -58,17 +69,6 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         }
 
         self
-    }
-
-    pub fn map_mut<F>(&mut self, f: F)
-    where
-        F: Fn(usize, usize, &mut T),
-    {
-        for i in 0..M {
-            for j in 0..N {
-                f(i, j, &mut self[(i, j)]);
-            }
-        }
     }
 }
 
