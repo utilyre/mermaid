@@ -41,7 +41,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         self.0.get_mut(i).map(|row| row.each_mut())
     }
 
-    pub fn into_row(self, i: usize) -> Option<[T; N]> {
+    pub fn take_row(self, i: usize) -> Option<[T; N]> {
         self.0.get(i).map(|row| unsafe { ptr::read(row) })
     }
 
@@ -53,7 +53,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         (j < N).then(|| self.0.each_mut().map(|row| &mut row[j]))
     }
 
-    pub fn into_col(self, j: usize) -> Option<[T; M]> {
+    pub fn take_col(self, j: usize) -> Option<[T; M]> {
         (j < N).then(|| array::from_fn::<_, M, _>(|i| unsafe { ptr::read(&self.0[i][j]) }))
     }
 
@@ -200,24 +200,24 @@ mod tests {
     use super::*;
 
     #[test]
-    fn into_row() {
+    fn take_row() {
         let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
 
-        assert_eq!(Some([5, -1, 2]), mat.clone().into_row(0));
-        assert_eq!(Some([-5, 0, -1]), mat.clone().into_row(1));
-        assert_eq!(None, mat.clone().into_row(2));
-        assert_eq!(None, mat.into_row(10));
+        assert_eq!(Some([5, -1, 2]), mat.clone().take_row(0));
+        assert_eq!(Some([-5, 0, -1]), mat.clone().take_row(1));
+        assert_eq!(None, mat.clone().take_row(2));
+        assert_eq!(None, mat.take_row(10));
     }
 
     #[test]
-    fn into_col() {
+    fn take_col() {
         let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
 
-        assert_eq!(Some([5, -5]), mat.clone().into_col(0));
-        assert_eq!(Some([-1, 0]), mat.clone().into_col(1));
-        assert_eq!(Some([2, -1]), mat.clone().into_col(2));
-        assert_eq!(None, mat.clone().into_col(3));
-        assert_eq!(None, mat.into_col(8));
+        assert_eq!(Some([5, -5]), mat.clone().take_col(0));
+        assert_eq!(Some([-1, 0]), mat.clone().take_col(1));
+        assert_eq!(Some([2, -1]), mat.clone().take_col(2));
+        assert_eq!(None, mat.clone().take_col(3));
+        assert_eq!(None, mat.take_col(8));
     }
 
     #[test]
