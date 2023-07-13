@@ -296,13 +296,13 @@ mod tests {
     }
 
     #[test]
-    fn inverse1x1() {
+    fn recip1x1() {
         let mat = Matrix::new([[5.0]]);
         assert_eq!(Matrix::new([[0.2]]), mat.recip());
     }
 
     #[test]
-    fn inverse2x2() {
+    fn recip2x2() {
         let mat = Matrix::new([[5.0, 6.0], [-5.0, 2.0]]);
         assert_eq!(40.0, mat.det());
         assert_eq!(
