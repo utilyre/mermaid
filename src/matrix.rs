@@ -41,12 +41,20 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         self.0.get_mut(i).map(|row| row.each_mut())
     }
 
+    pub fn into_row(self, i: usize) -> Option<[T; N]> {
+        (i < M).then(|| unsafe { ptr::read(&self.0[i]) })
+    }
+
     pub fn col(&self, j: usize) -> Option<[&T; M]> {
         (j < N).then(|| self.0.each_ref().map(|row| &row[j]))
     }
 
     pub fn col_mut(&mut self, j: usize) -> Option<[&mut T; M]> {
         (j < N).then(|| self.0.each_mut().map(|row| &mut row[j]))
+    }
+
+    pub fn into_col(self, j: usize) -> Option<[T; M]> {
+        (j < N).then(|| unsafe { array::from_fn::<_, M, _>(|i| ptr::read(&self.0[i][j])) })
     }
 
     pub fn get(&self, i: usize, j: usize) -> Option<&T> {
