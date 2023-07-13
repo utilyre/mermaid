@@ -2,7 +2,7 @@ use super::Matrix;
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn iter(&self) -> Iter<T, M, N> {
-        Iter::new(self.rows())
+        self.into_iter()
     }
 }
 
@@ -12,7 +12,7 @@ impl<'a, T, const M: usize, const N: usize> IntoIterator for &'a Matrix<T, M, N>
     type IntoIter = Iter<'a, T, M, N>;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.iter()
+        Self::IntoIter::new(self.rows())
     }
 }
 
