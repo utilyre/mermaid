@@ -194,13 +194,13 @@ mod tests {
 
     #[test]
     fn id_mul() {
-        let m_3x3 = Matrix::<u32, 3, 3>::id_mul();
-        let m_4x4 = Matrix::<u32, 4, 4>::id_mul();
+        let mat3x3 = Matrix::<u32, 3, 3>::id_mul();
+        let mat4x4 = Matrix::<u32, 4, 4>::id_mul();
 
-        assert_eq!(Matrix::new([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), m_3x3);
+        assert_eq!(Matrix::new([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), mat3x3);
         assert_eq!(
             Matrix::new([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
-            m_4x4
+            mat4x4
         );
     }
 
