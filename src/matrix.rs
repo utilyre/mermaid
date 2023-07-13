@@ -221,16 +221,6 @@ mod tests {
     }
 
     #[test]
-    fn into_map() {
-        let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
-
-        assert_eq!(
-            Matrix::new([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
-            mat.into_map(|_, _, x| 2 * x)
-        )
-    }
-
-    #[test]
     fn take() {
         let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
 
@@ -239,6 +229,16 @@ mod tests {
         assert_eq!(Some(1), mat.clone().take(2, 3));
         assert_eq!(None, mat.clone().take(0, 4));
         assert_eq!(None, mat.take(3, 2));
+    }
+
+    #[test]
+    fn into_map() {
+        let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
+
+        assert_eq!(
+            Matrix::new([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
+            mat.into_map(|_, _, x| 2 * x)
+        )
     }
 
     #[test]
