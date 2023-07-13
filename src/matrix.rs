@@ -156,13 +156,7 @@ where
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let strings = self.map(|_, _, x| x.to_string());
-        let Some(max_len) = strings
-            .0
-            .iter()
-            .flat_map(|row| row.iter())
-            .map(|x| x.len())
-            .max()
-        else {
+        let Some(max_len) = strings.iter().map(|x| x.len()).max() else {
             return write!(f, "||");
         };
 
@@ -200,11 +194,7 @@ mod tests {
 
     #[test]
     fn display() {
-        let mat = Matrix::new([
-            [-1, 0],
-            [2, 87],
-            [-55, 3],
-        ]);
+        let mat = Matrix::new([[-1, 0], [2, 87], [-55, 3]]);
 
         assert_eq!(
             "\
