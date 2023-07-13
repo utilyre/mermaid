@@ -34,11 +34,13 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn row(&self, i: usize) -> Option<[&T; N]> {
-        self.0.get(i).map(|row| row.each_ref())
+        self.0.get(i).map(|row| array::from_fn(|j| &row[j]))
     }
 
     pub fn row_mut(&mut self, i: usize) -> Option<[&mut T; N]> {
-        self.0.get_mut(i).map(|row| row.each_mut())
+        self.0
+            .get_mut(i)
+            .map(|row| array::from_fn(|j| unsafe { &mut *(&mut row[j] as *mut T) }))
     }
 
     pub fn take_row(self, i: usize) -> Option<[T; N]> {
@@ -46,11 +48,14 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn col(&self, j: usize) -> Option<[&T; M]> {
-        (j < N).then(|| self.0.each_ref().map(|row| &row[j]))
+        (j < N).then(|| array::from_fn(|i| &self.0[i]).map(|row| &row[j]))
     }
 
     pub fn col_mut(&mut self, j: usize) -> Option<[&mut T; M]> {
-        (j < N).then(|| self.0.each_mut().map(|row| &mut row[j]))
+        (j < N).then(|| {
+            array::from_fn(|i| unsafe { &mut *(&mut self.0[i] as *mut [T; N]) })
+                .map(|row| &mut row[j])
+        })
     }
 
     pub fn take_col(self, j: usize) -> Option<[T; M]> {

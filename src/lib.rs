@@ -1,5 +1,3 @@
-#![feature(array_methods)]
-
 pub mod prelude;
 
 pub mod identity;
