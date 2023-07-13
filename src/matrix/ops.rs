@@ -307,7 +307,8 @@ mod tests {
         assert_eq!(40.0, mat.det());
         assert_eq!(
             Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
-            mat.recip().into_map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
+            mat.recip()
+                .into_map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );
     }
 }
