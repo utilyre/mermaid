@@ -109,6 +109,20 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 }
 
+impl<T, const M: usize> Matrix<T, M, M> {
+    pub fn diag(&self) -> [&T; M] {
+        array::from_fn(|i| &self[(i, i)])
+    }
+
+    pub fn diag_mut(&mut self) -> [&mut T; M] {
+        array::from_fn(|i| unsafe { &mut *(&mut self[(i, i)] as *mut T) })
+    }
+
+    pub fn into_diag(self) -> [T; M] {
+        array::from_fn(|i| unsafe { ptr::read(&self[(i, i)]) })
+    }
+}
+
 impl<T, const M: usize, const N: usize> Default for Matrix<T, M, N>
 where
     T: Default,
@@ -239,6 +253,23 @@ mod tests {
             Matrix::new([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
             mat.into_map(|_, _, x| 2 * x)
         )
+    }
+
+    #[test]
+    fn diag_mut() {
+        let mut mat = Matrix::new([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
+        let diag = mat.diag_mut();
+        *diag[0] = 1;
+        *diag[1] = 7;
+        *diag[2] = 6;
+
+        assert_eq!([&1, &7, &6], mat.diag());
+    }
+
+    #[test]
+    fn into_diag() {
+        let mat = Matrix::new([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
+        assert_eq!([2, 1, 4], mat.into_diag());
     }
 
     #[test]
