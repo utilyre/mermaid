@@ -21,8 +21,8 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         Self(rows)
     }
 
-    pub fn rows(&self) -> [[&T; N]; M] {
-        array::from_fn(|i| self.0[i].each_ref())
+    pub fn rows(&self) -> &[[T; N]; M] {
+        &self.0
     }
 
     pub fn into_rows(self) -> [[T; N]; M] {
