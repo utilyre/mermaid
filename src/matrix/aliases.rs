@@ -1,5 +1,7 @@
 use super::Matrix;
 
+pub type Matrix0x0<T> = Matrix<T, 0, 0>;
+
 pub type Matrix1x1<T> = Matrix<T, 1, 1>;
 pub type Matrix1x2<T> = Matrix<T, 1, 2>;
 pub type Matrix1x3<T> = Matrix<T, 1, 3>;
