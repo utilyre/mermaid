@@ -42,7 +42,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn into_row(self, i: usize) -> Option<[T; N]> {
-        (i < M).then(|| unsafe { ptr::read(&self.0[i]) })
+        self.0.get(i).map(|row| unsafe { ptr::read(row) })
     }
 
     pub fn col(&self, j: usize) -> Option<[&T; M]> {
@@ -54,7 +54,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn into_col(self, j: usize) -> Option<[T; M]> {
-        (j < N).then(|| unsafe { array::from_fn::<_, M, _>(|i| ptr::read(&self.0[i][j])) })
+        (j < N).then(|| array::from_fn::<_, M, _>(|i| unsafe { ptr::read(&self.0[i][j]) }))
     }
 
     pub fn get(&self, i: usize, j: usize) -> Option<&T> {
