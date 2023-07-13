@@ -44,6 +44,15 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         self.0.get_mut(i).and_then(|row| row.get_mut(j))
     }
 
+    pub fn map<U, F>(&self, mut f: F) -> Matrix<U, M, N>
+    where
+        F: FnMut(usize, usize, &T) -> U,
+    {
+        Matrix::new(array::from_fn(|i| {
+            array::from_fn(|j| f(i, j, &self[(i, j)]))
+        }))
+    }
+
     pub fn map_mut<F>(&mut self, mut f: F)
     where
         F: FnMut(usize, usize, &mut T),
