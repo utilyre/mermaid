@@ -16,7 +16,10 @@ impl<'a, T, const M: usize, const N: usize> IntoIterator for &'a Matrix<T, M, N>
     }
 }
 
-pub struct Iter<'a, T, const M: usize, const N: usize> {
+pub struct Iter<'a, T, const M: usize, const N: usize>
+where
+    T: 'a,
+{
     i: usize,
     j: usize,
     rows: &'a [[T; N]; M],
