@@ -21,12 +21,12 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         Self(rows)
     }
 
-    pub fn rows(&self) -> &[[T; N]; M] {
-        &self.0
+    pub fn rows(&self) -> [[&T; N]; M] {
+        array::from_fn(|i| array::from_fn(|j| &self[(i, j)]))
     }
 
-    pub fn rows_mut(&mut self) -> &mut [[T; N]; M] {
-        &mut self.0
+    pub fn rows_mut(&mut self) -> [[&mut T; N]; M] {
+        array::from_fn(|i| array::from_fn(|j| unsafe { &mut *(&mut self[(i, j)] as *mut T) }))
     }
 
     pub fn into_rows(self) -> [[T; N]; M] {

@@ -22,11 +22,11 @@ where
 {
     i: usize,
     j: usize,
-    rows: &'a [[T; N]; M],
+    rows: [[&'a T; N]; M],
 }
 
 impl<'a, T, const M: usize, const N: usize> Iter<'a, T, M, N> {
-    pub fn new(rows: &'a [[T; N]; M]) -> Self {
+    pub fn new(rows: [[&'a T; N]; M]) -> Self {
         Self { i: 0, j: 0, rows }
     }
 }
