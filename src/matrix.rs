@@ -3,7 +3,11 @@ use crate::{
     vec2::Vec2,
     vec3::Vec3,
 };
-use std::{array, ptr};
+use std::{
+    array,
+    fmt::{self, Display, Formatter},
+    ptr,
+};
 
 pub mod aliases;
 mod ops;
@@ -141,6 +145,38 @@ impl<const N: usize> From<[Vec3; N]> for Matrix<f32, 3, N> {
     }
 }
 
+impl<T, const M: usize, const N: usize> Display for Matrix<T, M, N>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let strings = self.map(|_, _, x| x.to_string());
+        let Some(max_len) = strings
+            .0
+            .iter()
+            .flat_map(|row| row.iter())
+            .map(|x| x.len())
+            .max()
+        else {
+            return write!(f, "||");
+        };
+
+        for i in 0..M {
+            write!(f, "|")?;
+            for j in 0..N {
+                write!(f, "{: ^len$}", strings[(i, j)], len = max_len + 2)?;
+            }
+            write!(f, "|")?;
+
+            if i < M - 1 {
+                writeln!(f)?;
+            }
+        }
+
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -154,6 +190,24 @@ mod tests {
         assert_eq!(
             Matrix::new([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
             m_4x4
+        );
+    }
+
+    #[test]
+    fn display() {
+        let mat = Matrix::new([
+            [-1, 0],
+            [2, 87],
+            [-55, 3],
+        ]);
+
+        assert_eq!(
+            "\
+            | -1    0  |\n\
+            |  2   87  |\n\
+            | -55   3  |\
+            ",
+            mat.to_string()
         );
     }
 }
