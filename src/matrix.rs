@@ -25,6 +25,10 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         &self.0
     }
 
+    pub fn rows_mut(&mut self) -> &mut [[T; N]; M] {
+        &mut self.0
+    }
+
     pub fn into_rows(self) -> [[T; N]; M] {
         self.0
     }
