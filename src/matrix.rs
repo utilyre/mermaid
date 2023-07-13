@@ -193,6 +193,37 @@ mod tests {
     use super::*;
 
     #[test]
+    fn into_row() {
+        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        assert_eq!(Some([5, -1, 2]), mat.clone().into_row(0));
+        assert_eq!(Some([-5, 0, -1]), mat.clone().into_row(1));
+        assert_eq!(None, mat.clone().into_row(2));
+        assert_eq!(None, mat.into_row(10));
+    }
+
+    #[test]
+    fn into_col() {
+        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        assert_eq!(Some([5, -5]), mat.clone().into_col(0));
+        assert_eq!(Some([-1, 0]), mat.clone().into_col(1));
+        assert_eq!(Some([2, -1]), mat.clone().into_col(2));
+        assert_eq!(None, mat.clone().into_col(3));
+        assert_eq!(None, mat.into_col(8));
+    }
+
+    #[test]
+    fn into_map() {
+        let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
+
+        assert_eq!(
+            Matrix::new([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
+            mat.into_map(|_, _, x| 2 * x)
+        )
+    }
+
+    #[test]
     fn id_mul() {
         let mat3x3 = Matrix::<u32, 3, 3>::id_mul();
         let mat4x4 = Matrix::<u32, 4, 4>::id_mul();
