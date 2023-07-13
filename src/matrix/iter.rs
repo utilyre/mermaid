@@ -45,7 +45,7 @@ impl<'a, T, const M: usize, const N: usize> Iterator for Iter<'a, T, M, N> {
         }
 
         self.j += 1;
-        Some(&self.rows[self.i][self.j - 1])
+        Some(self.rows[self.i][self.j - 1])
     }
 }
 
