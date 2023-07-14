@@ -1,6 +1,10 @@
 [package]
 name = "mermaid"
 version = "0.1.0"
+authors = ["Amirabbas Fazelinia <utilyre@proton.me>"]
 edition = "2021"
 description = "Experimental Linear Algebra"
+repository = "https://github.com/utilyre/mermaid"
 license-file = "LICENSE"
+keywords = ["mathematics", "math", "linear-algebra", "matrix", "vector", "vec"]
+categories = ["data-structures", "game-development", "mathematics"]
