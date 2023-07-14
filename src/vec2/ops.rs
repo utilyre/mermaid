@@ -7,7 +7,7 @@ impl Vec2 {
     }
 
     pub fn normalize(&mut self) {
-        *self *= 1.0 / self.len();
+        *self *= self.len().recip();
     }
 
     pub fn dot(self, rhs: Self) -> f32 {
