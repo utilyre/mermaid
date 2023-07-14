@@ -13,7 +13,7 @@ pub mod aliases;
 mod iter;
 mod ops;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
