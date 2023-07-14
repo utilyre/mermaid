@@ -219,6 +219,30 @@ mod tests {
     use super::*;
 
     #[test]
+    fn rows_mut() {
+        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        assert_eq!(
+            [[&mut 5, &mut -1, &mut 2], [&mut -5, &mut 0, &mut -1]],
+            mat.rows_mut()
+        );
+    }
+
+    #[test]
+    fn row_mut() {
+        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        let row1 = mat.row_mut(0).unwrap();
+        *row1[2] = 8;
+
+        let row2 = mat.row_mut(1).unwrap();
+        *row2[0] = 3;
+
+        assert_eq!(&8, &mat[(0, 2)]);
+        assert_eq!(&3, &mat[(1, 0)]);
+    }
+
+    #[test]
     fn take_row() {
         let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
 
@@ -226,6 +250,24 @@ mod tests {
         assert_eq!(Some([-5, 0, -1]), mat.clone().take_row(1));
         assert_eq!(None, mat.clone().take_row(2));
         assert_eq!(None, mat.take_row(10));
+    }
+
+    #[test]
+    fn col_mut() {
+        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        let col1 = mat.col_mut(0).unwrap();
+        *col1[1] = -2;
+
+        let col2 = mat.col_mut(1).unwrap();
+        *col2[0] = 0;
+
+        let col3 = mat.col_mut(2).unwrap();
+        *col3[1] = -8;
+
+        assert_eq!(&-2, &mat[(1, 0)]);
+        assert_eq!(&0, &mat[(0, 1)]);
+        assert_eq!(&-8, &mat[(1, 2)]);
     }
 
     #[test]
