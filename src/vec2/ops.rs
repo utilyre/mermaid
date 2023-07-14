@@ -145,6 +145,14 @@ mod tests {
     }
 
     #[test]
+    fn refl() {
+        let v1 = Vec2::new(2.0, 5.0);
+        let v2 = Vec2::new(3.0, 4.0);
+
+        assert_eq!(Vec2::new(4.0, 3.0), v1.refl(v2));
+    }
+
+    #[test]
     fn proj() {
         let v1 = Vec2::new(2.0, 5.0);
         let v2 = Vec2::new(3.0, 4.0);
