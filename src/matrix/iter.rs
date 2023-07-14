@@ -30,7 +30,7 @@ where
 }
 
 impl<'a, T, const M: usize, const N: usize> Iter<'a, T, M, N> {
-    pub fn new(rows: [[&'a T; N]; M]) -> Self {
+    fn new(rows: [[&'a T; N]; M]) -> Self {
         Self { rows, i: 0, j: 0 }
     }
 }
@@ -72,7 +72,7 @@ where
 }
 
 impl<'a, T, const M: usize, const N: usize> IterMut<'a, T, M, N> {
-    pub fn new(rows: [[&'a mut T; N]; M]) -> Self {
+    fn new(rows: [[&'a mut T; N]; M]) -> Self {
         Self { rows, i: 0, j: 0 }
     }
 }
@@ -111,7 +111,7 @@ pub struct IntoIter<T, const M: usize, const N: usize> {
 }
 
 impl<T, const M: usize, const N: usize> IntoIter<T, M, N> {
-    pub fn new(rows: [[T; N]; M]) -> Self {
+    fn new(rows: [[T; N]; M]) -> Self {
         Self { rows, i: 0, j: 0 }
     }
 }
