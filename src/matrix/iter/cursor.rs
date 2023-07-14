@@ -25,7 +25,7 @@ where
     type Item = (usize, usize, I::Item);
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.j >= N {
+        if self.j == N {
             self.i += 1;
             self.j = 0;
         }

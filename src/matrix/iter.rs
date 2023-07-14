@@ -41,12 +41,12 @@ impl<'a, T, const M: usize, const N: usize> Iterator for Iter<'a, T, M, N> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.j >= N {
-            self.i += 1;
-            if self.i >= M {
+        if self.j == N {
+            if self.i == M - 1 {
                 return None;
             }
 
+            self.i += 1;
             self.j = 0;
         }
 
@@ -83,12 +83,12 @@ impl<'a, T, const M: usize, const N: usize> Iterator for IterMut<'a, T, M, N> {
     type Item = &'a mut T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.j >= N {
-            self.i += 1;
-            if self.i >= M {
+        if self.j == N {
+            if self.i == M - 1 {
                 return None;
             }
 
+            self.i += 1;
             self.j = 0;
         }
 
@@ -122,12 +122,12 @@ impl<T, const M: usize, const N: usize> Iterator for IntoIter<T, M, N> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.j >= N {
-            self.i += 1;
-            if self.i >= M {
+        if self.j == N {
+            if self.i == M - 1 {
                 return None;
             }
 
+            self.i += 1;
             self.j = 0;
         }
 
