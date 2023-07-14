@@ -35,10 +35,8 @@ where
     }
 }
 
-pub trait CursorIterator<const N: usize>: Iterator {
-    fn cursor(self) -> Cursor<Self, N>
-    where
-        Self: Sized + Iterator;
+pub trait CursorIterator<const N: usize>: Sized + Iterator {
+    fn cursor(self) -> Cursor<Self, N>;
 }
 
 impl<'a, T, const M: usize, const N: usize> CursorIterator<N> for Iter<'a, T, M, N> {
