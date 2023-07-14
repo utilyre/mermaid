@@ -191,12 +191,15 @@ where
     type Output = Self;
 
     fn recip(self) -> Self::Output {
-        let a = unsafe { ptr::read(&self[(1, 1)]) };
-        let b = unsafe { ptr::read(&self[(0, 1)]) }.neg();
-        let c = unsafe { ptr::read(&self[(1, 0)]) }.neg();
-        let d = unsafe { ptr::read(&self[(0, 0)]) };
-
-        Self::new([[a, b], [c, d]]).scale(self.det().recip())
+        Self::new([
+            [unsafe { ptr::read(&self[(1, 1)]) }, -unsafe {
+                ptr::read(&self[(0, 1)])
+            }],
+            [-unsafe { ptr::read(&self[(1, 0)]) }, unsafe {
+                ptr::read(&self[(0, 0)])
+            }],
+        ])
+        .scale(self.det().recip())
     }
 }
 
