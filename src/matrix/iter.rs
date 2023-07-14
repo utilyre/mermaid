@@ -50,8 +50,10 @@ impl<'a, T, const M: usize, const N: usize> Iterator for Iter<'a, T, M, N> {
             self.j = 0;
         }
 
+        let j = self.j;
         self.j += 1;
-        Some(self.rows[self.i][self.j - 1])
+
+        Some(self.rows[self.i][j])
     }
 }
 
@@ -92,8 +94,10 @@ impl<'a, T, const M: usize, const N: usize> Iterator for IterMut<'a, T, M, N> {
             self.j = 0;
         }
 
+        let j = self.j;
         self.j += 1;
-        Some(unsafe { &mut *(self.rows[self.i][self.j - 1] as *mut T) })
+
+        Some(unsafe { &mut *(self.rows[self.i][j] as *mut T) })
     }
 }
 
@@ -131,8 +135,10 @@ impl<T, const M: usize, const N: usize> Iterator for IntoIter<T, M, N> {
             self.j = 0;
         }
 
+        let j = self.j;
         self.j += 1;
-        Some(unsafe { ptr::read(&self.rows[self.i][self.j - 1]) })
+
+        Some(unsafe { ptr::read(&self.rows[self.i][j]) })
     }
 }
 

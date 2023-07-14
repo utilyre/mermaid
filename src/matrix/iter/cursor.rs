@@ -30,8 +30,10 @@ where
             self.j = 0;
         }
 
+        let j = self.j;
         self.j += 1;
-        self.iter.next().map(|x| (self.i, self.j - 1, x))
+
+        self.iter.next().map(|x| (self.i, j, x))
     }
 }
 
