@@ -10,7 +10,7 @@ use std::{
 };
 
 pub mod aliases;
-mod iter;
+pub mod iter;
 mod ops;
 
 #[derive(Debug, Clone)]

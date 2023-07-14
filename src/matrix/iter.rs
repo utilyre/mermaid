@@ -1,7 +1,7 @@
 use super::Matrix;
 use std::ptr;
 
-mod cursor;
+pub mod cursor;
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     pub fn iter(&self) -> Iter<T, M, N> {
