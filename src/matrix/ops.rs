@@ -172,37 +172,31 @@ where
     }
 }
 
-impl<T, U> Recip for Matrix<T, 1, 1>
+impl<T> Recip for Matrix<T, 1, 1>
 where
-    T: Recip<Output = U>,
+    T: Recip<Output = T>,
 {
-    type Output = Matrix<U, 1, 1>;
+    type Output = Matrix<T, 1, 1>;
 
-    fn recip(self) -> Self {
+    fn recip(self) -> Self::Output {
         Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.recip()]])
     }
 }
 
-impl<T, U> Recip for Matrix<T, 2, 2>
+impl<T> Recip for Matrix<T, 2, 2>
 where
     for<'a, 'b> &'a T: Mul<&'b T, Output = T>,
-    T: Sub<T, Output = T> + Neg<Output = T> + Recip<Output = U> + IdAdd,
+    T: Sub<T, Output = T> + Neg<Output = T> + Recip<Output = T> + IdAdd,
 {
-    type Output = Matrix<U, 2, 2>;
+    type Output = Self;
 
-    fn recip(self) -> Self {
-        let factor = self.det().recip();
+    fn recip(self) -> Self::Output {
+        let a = unsafe { ptr::read(&self[(1, 1)]) };
+        let b = unsafe { ptr::read(&self[(0, 1)]) }.neg();
+        let c = unsafe { ptr::read(&self[(1, 0)]) }.neg();
+        let d = unsafe { ptr::read(&self[(0, 0)]) };
 
-        Self::new([
-            [
-                unsafe { ptr::read(&self[(1, 1)]) },
-                unsafe { ptr::read(&self[(0, 1)]) }.neg(),
-            ],
-            [unsafe { ptr::read(&self[(1, 0)]) }.neg(), unsafe {
-                ptr::read(&self[(0, 0)])
-            }],
-        ])
-        .scale(factor)
+        Self::new([[a, b], [c, d]]).scale(self.det().recip())
     }
 }
 

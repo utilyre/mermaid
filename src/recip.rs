@@ -1,21 +1,19 @@
+use crate::prelude::IdMul;
+use std::ops::Div;
+
 pub trait Recip {
     type Output;
 
-    fn recip(self) -> Self;
+    fn recip(self) -> Self::Output;
 }
 
-impl Recip for f32 {
-    type Output = f32;
+impl<T, U> Recip for T
+where
+    T: Div<T, Output = U> + IdMul,
+{
+    type Output = U;
 
-    fn recip(self) -> Self {
-        self.recip()
-    }
-}
-
-impl Recip for f64 {
-    type Output = f64;
-
-    fn recip(self) -> Self {
-        self.recip()
+    fn recip(self) -> Self::Output {
+        Self::id_mul() / self
     }
 }
