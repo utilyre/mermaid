@@ -37,6 +37,10 @@ impl Vec3 {
         )
     }
 
+    pub fn refl(self, base: Self) -> Self {
+        2.0 * base - self
+    }
+
     pub fn proj(self, base: Self) -> Self {
         (self.dot(base) / base.len().powi(2)) * base
     }

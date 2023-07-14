@@ -27,6 +27,10 @@ impl Vec2 {
         self.x * rhs.x + self.y * rhs.y
     }
 
+    pub fn refl(self, base: Self) -> Self {
+        2.0 * base - self
+    }
+
     pub fn proj(self, base: Self) -> Self {
         (self.dot(base) / base.len().powi(2)) * base
     }
