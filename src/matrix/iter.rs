@@ -24,14 +24,14 @@ pub struct Iter<'a, T, const M: usize, const N: usize>
 where
     T: 'a,
 {
+    rows: [[&'a T; N]; M],
     i: usize,
     j: usize,
-    rows: [[&'a T; N]; M],
 }
 
 impl<'a, T, const M: usize, const N: usize> Iter<'a, T, M, N> {
     pub fn new(rows: [[&'a T; N]; M]) -> Self {
-        Self { i: 0, j: 0, rows }
+        Self { rows, i: 0, j: 0 }
     }
 }
 
@@ -66,14 +66,14 @@ pub struct IterMut<'a, T, const M: usize, const N: usize>
 where
     T: 'a,
 {
+    rows: [[&'a mut T; N]; M],
     i: usize,
     j: usize,
-    rows: [[&'a mut T; N]; M],
 }
 
 impl<'a, T, const M: usize, const N: usize> IterMut<'a, T, M, N> {
     pub fn new(rows: [[&'a mut T; N]; M]) -> Self {
-        Self { i: 0, j: 0, rows }
+        Self { rows, i: 0, j: 0 }
     }
 }
 
@@ -105,14 +105,14 @@ impl<T, const M: usize, const N: usize> IntoIterator for Matrix<T, M, N> {
 }
 
 pub struct IntoIter<T, const M: usize, const N: usize> {
+    rows: [[T; N]; M],
     i: usize,
     j: usize,
-    rows: [[T; N]; M],
 }
 
 impl<T, const M: usize, const N: usize> IntoIter<T, M, N> {
     pub fn new(rows: [[T; N]; M]) -> Self {
-        Self { i: 0, j: 0, rows }
+        Self { rows, i: 0, j: 0 }
     }
 }
 
