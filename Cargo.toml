@@ -6,5 +6,5 @@ edition = "2021"
 description = "Experimental Linear Algebra"
 repository = "https://github.com/utilyre/mermaid"
 license-file = "LICENSE"
-keywords = ["mathematics", "math", "linear-algebra", "matrix", "vector", "vec"]
+keywords = ["linear-algebra", "matrix", "vector"]
 categories = ["data-structures", "game-development", "mathematics"]
