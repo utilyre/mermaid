@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, prelude::IdAdd};
+use crate::{identity::IdAdd, matrix::Matrix};
 use std::fmt::{self, Display, Formatter};
 
 mod ops;

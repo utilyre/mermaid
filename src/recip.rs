@@ -1,4 +1,4 @@
-use crate::prelude::IdMul;
+use crate::identity::IdMul;
 use std::ops::Div;
 
 pub trait Recip {
