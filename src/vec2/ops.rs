@@ -2,8 +2,12 @@ use super::Vec2;
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 impl Vec2 {
+    pub fn len_sq(self) -> f32 {
+        self.x.powi(2) + self.y.powi(2)
+    }
+
     pub fn len(self) -> f32 {
-        (self.x.powi(2) + self.y.powi(2)).sqrt()
+        self.len_sq().sqrt()
     }
 
     pub fn dot(self, rhs: Self) -> f32 {
@@ -19,7 +23,7 @@ impl Vec2 {
     }
 
     pub fn proj(self, base: Self) -> Self {
-        (self.dot(base) / base.len().powi(2)) * base
+        (self.dot(base) / base.len_sq()) * base
     }
 }
 
