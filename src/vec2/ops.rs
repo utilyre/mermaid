@@ -28,6 +28,10 @@ impl Vec2 {
     pub fn proj(self, base: Self) -> Self {
         (self.dot(base) / base.len_sq()) * base
     }
+
+    pub fn lerp(self, other: Self, x: f32) -> Self {
+        (other - self) * x + self
+    }
 }
 
 impl Index<usize> for Vec2 {
@@ -170,6 +174,14 @@ mod tests {
         let v2 = Vec2::new(3.0, 4.0);
 
         assert_eq!(Vec2::new(3.12, 4.16), v1.proj(v2));
+    }
+
+    #[test]
+    fn lerp() {
+        let v1 = Vec2::new(5.0, 11.0);
+        let v2 = Vec2::new(23.0, 7.0);
+
+        assert_eq!(Vec2::new(10.4, 9.8), v1.lerp(v2, 0.3));
     }
 
     #[test]
