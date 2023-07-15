@@ -18,6 +18,10 @@ impl Vec3 {
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
+
+    pub const fn splat(value: f32) -> Self {
+        Self { x: value, y: value, z: value }
+    }
 }
 
 impl Default for Vec3 {
