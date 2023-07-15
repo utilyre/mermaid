@@ -6,12 +6,12 @@ impl Vec2 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 
-    pub fn norm(&mut self) {
-        *self *= self.len().recip();
-    }
-
     pub fn dot(self, rhs: Self) -> f32 {
         self.x * rhs.x + self.y * rhs.y
+    }
+
+    pub fn norm(self) -> Self {
+        self.len().recip() * self
     }
 
     pub fn refl(self, base: Self) -> Self {
@@ -130,10 +130,8 @@ mod tests {
 
     #[test]
     fn norm() {
-        let mut v = Vec2::new(3.0, 4.0);
-
-        v.norm();
-        assert_eq!(Vec2::new(0.6, 0.8), v);
+        let v = Vec2::new(3.0, 4.0);
+        assert_eq!(Vec2::new(0.6, 0.8), v.norm());
     }
 
     #[test]
