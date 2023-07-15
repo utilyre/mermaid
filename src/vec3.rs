@@ -30,7 +30,7 @@ impl Vec3 {
 
 impl Default for Vec3 {
     fn default() -> Self {
-        Vec3::new(0.0, 0.0, 0.0)
+        Vec3::splat(0.0)
     }
 }
 

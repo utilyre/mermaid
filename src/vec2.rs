@@ -24,7 +24,7 @@ impl Vec2 {
 
 impl Default for Vec2 {
     fn default() -> Self {
-        Self::new(0.0, 0.0)
+        Self::splat(0.0)
     }
 }
 
