@@ -33,6 +33,18 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         self.0
     }
 
+    pub fn cols(&self) -> [[&T; M]; N] {
+        array::from_fn(|j| array::from_fn(|i| &self[(i, j)]))
+    }
+
+    pub fn cols_mut(&mut self) -> [[&mut T; M]; N] {
+        array::from_fn(|j| array::from_fn(|i| unsafe { &mut *(&mut self[(i, j)] as *mut T) }))
+    }
+
+    pub fn into_cols(self) -> [[T; M]; N] {
+        array::from_fn(|j| array::from_fn(|i| unsafe { ptr::read(&self[(i, j)]) }))
+    }
+
     pub fn row(&self, i: usize) -> Option<[&T; N]> {
         self.0.get(i).map(|row| array::from_fn(|j| &row[j]))
     }
@@ -226,6 +238,22 @@ mod tests {
             [[&mut 5, &mut -1, &mut 2], [&mut -5, &mut 0, &mut -1]],
             mat.rows_mut()
         );
+    }
+
+    #[test]
+    fn cols_mut() {
+        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+
+        assert_eq!(
+            [[&mut 5, &mut -5], [&mut -1, &mut 0], [&mut 2, &mut -1]],
+            mat.cols_mut()
+        );
+    }
+
+    #[test]
+    fn into_cols() {
+        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        assert_eq!([[5, -5], [-1, 0], [2, -1]], mat.into_cols());
     }
 
     #[test]
