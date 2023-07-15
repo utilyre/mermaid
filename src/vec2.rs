@@ -30,7 +30,7 @@ impl Default for Vec2 {
 
 impl IdAdd for Vec2 {
     fn id_add() -> Self {
-        Self::new(0.0, 0.0)
+        Self::splat(0.0)
     }
 }
 
