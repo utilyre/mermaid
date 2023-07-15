@@ -23,7 +23,10 @@ impl Vec3 {
     }
 
     pub fn norm(self) -> Self {
-        self.len().recip() * self
+        let len = self.len();
+        assert_ne!(0.0, len, "cannot normalize a vector with length of zero");
+
+        len.recip() * self
     }
 
     pub fn refl(self, base: Self) -> Self {
@@ -149,6 +152,13 @@ mod tests {
     fn norm() {
         let v = Vec3::new(3.0, 0.0, 4.0);
         assert_eq!(Vec3::new(0.6, 0.0, 0.8), v.norm());
+    }
+
+    #[test]
+    #[should_panic(expected = "cannot normalize a vector with length of zero")]
+    fn norm_zero_len() {
+        let v = Vec3::splat(0.0);
+        let _ = v.norm();
     }
 
     #[test]
