@@ -20,7 +20,11 @@ impl Vec3 {
     }
 
     pub const fn splat(value: f32) -> Self {
-        Self { x: value, y: value, z: value }
+        Self {
+            x: value,
+            y: value,
+            z: value,
+        }
     }
 }
 
