@@ -2,7 +2,7 @@ use super::Vec2;
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 impl Vec2 {
-    pub fn len(&self) -> f32 {
+    pub fn len(self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 
