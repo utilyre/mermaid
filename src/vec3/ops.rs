@@ -10,6 +10,10 @@ impl Vec3 {
         self.len_sq().sqrt()
     }
 
+    pub fn ang(self, other: Self) -> f32 {
+        (self.dot(other) / (self.len_sq() * other.len_sq()).sqrt()).acos()
+    }
+
     pub fn dot(self, rhs: Self) -> f32 {
         self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
     }
@@ -145,11 +149,20 @@ impl Mul<Vec3> for f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::f32::consts::PI;
 
     #[test]
     fn len() {
         let v = Vec3::new(3.0, 4.0, 12.0);
         assert_eq!(13.0, v.len());
+    }
+
+    #[test]
+    fn ang() {
+        let v1 = Vec3::I;
+        let v2 = Vec3::I + Vec3::K;
+
+        assert_eq!(PI / 4.0, v1.ang(v2));
     }
 
     #[test]
