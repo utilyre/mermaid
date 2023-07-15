@@ -6,7 +6,7 @@ impl Vec2 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
 
-    pub fn normalize(&mut self) {
+    pub fn norm(&mut self) {
         *self *= self.len().recip();
     }
 
@@ -129,10 +129,10 @@ mod tests {
     }
 
     #[test]
-    fn normalize() {
+    fn norm() {
         let mut v = Vec2::new(3.0, 4.0);
 
-        v.normalize();
+        v.norm();
         assert_eq!(Vec2::new(0.6, 0.8), v);
     }
 
