@@ -1,4 +1,5 @@
 use crate::{matrix::Matrix, prelude::IdAdd};
+use std::fmt::{self, Display, Formatter};
 
 mod ops;
 
@@ -46,5 +47,11 @@ impl From<[f32; 3]> for Vec3 {
 impl From<Matrix<f32, 3, 1>> for Vec3 {
     fn from(value: Matrix<f32, 3, 1>) -> Self {
         Self::new(value[(0, 0)], value[(1, 0)], value[(2, 0)])
+    }
+}
+
+impl Display for Vec3 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.x, self.y, self.z)
     }
 }
