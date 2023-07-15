@@ -42,28 +42,19 @@ pub trait CursorIterator<const N: usize>: Sized + Iterator {
 }
 
 impl<'a, T, const M: usize, const N: usize> CursorIterator<N> for Iter<'a, T, M, N> {
-    fn cursor(self) -> Cursor<Self, N>
-    where
-        Self: Sized + Iterator,
-    {
+    fn cursor(self) -> Cursor<Self, N> {
         Cursor::new(self)
     }
 }
 
 impl<'a, T, const M: usize, const N: usize> CursorIterator<N> for IterMut<'a, T, M, N> {
-    fn cursor(self) -> Cursor<Self, N>
-    where
-        Self: Sized + Iterator,
-    {
+    fn cursor(self) -> Cursor<Self, N> {
         Cursor::new(self)
     }
 }
 
 impl<T, const M: usize, const N: usize> CursorIterator<N> for IntoIter<T, M, N> {
-    fn cursor(self) -> Cursor<Self, N>
-    where
-        Self: Sized + Iterator,
-    {
+    fn cursor(self) -> Cursor<Self, N> {
         Cursor::new(self)
     }
 }
