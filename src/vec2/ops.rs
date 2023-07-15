@@ -136,7 +136,7 @@ impl Mul<Vec2> for f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::f32::consts::PI;
+    use std::f32::consts as f32;
 
     #[test]
     fn len() {
@@ -149,7 +149,7 @@ mod tests {
         let v1 = Vec2::I;
         let v2 = Vec2::I + Vec2::J;
 
-        assert_eq!(PI / 4.0, v1.ang(v2));
+        assert!((v1.ang(v2) - f32::FRAC_PI_4).abs() <= f32::EPSILON);
     }
 
     #[test]
