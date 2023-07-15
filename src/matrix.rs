@@ -206,21 +206,17 @@ where
 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         let strings = self.map(|_, _, x| x.to_string());
-        let Some(max_len) = strings.iter().map(|x| x.len()).max() else {
-            return write!(f, "||");
-        };
+        let max_len = strings.iter().map(|x| x.len()).max().unwrap_or_default() + 2;
 
+        writeln!(f, "┌{}┐", " ".repeat(N * max_len))?;
         for i in 0..M {
-            write!(f, "|")?;
+            write!(f, "│")?;
             for j in 0..N {
-                write!(f, "{: ^len$}", strings[(i, j)], len = max_len + 2)?;
+                write!(f, "{: ^len$}", strings[(i, j)], len = max_len)?;
             }
-            write!(f, "|")?;
-
-            if i < M - 1 {
-                writeln!(f)?;
-            }
+            writeln!(f, "│")?;
         }
+        write!(f, "└{}┘", " ".repeat(N * max_len))?;
 
         Ok(())
     }
@@ -365,9 +361,11 @@ mod tests {
 
         assert_eq!(
             "\
-            | -1    0  |\n\
-            |  2   87  |\n\
-            | -55   3  |\
+            ┌          ┐\n\
+            │ -1    0  │\n\
+            │  2   87  │\n\
+            │ -55   3  │\n\
+            └          ┘\
             ",
             mat.to_string()
         );
