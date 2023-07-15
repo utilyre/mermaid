@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, prelude::IdAdd};
+use crate::{identity::IdAdd, matrix::Matrix, vec2::Vec2};
 use std::fmt::{self, Display, Formatter};
 
 mod ops;
@@ -49,6 +49,12 @@ impl From<(f32, f32, f32)> for Vec3 {
 impl From<[f32; 3]> for Vec3 {
     fn from(value: [f32; 3]) -> Self {
         Self::new(value[0], value[1], value[2])
+    }
+}
+
+impl From<Vec2> for Vec3 {
+    fn from(value: Vec2) -> Self {
+        Self::new(value.x, value.y, 0.0)
     }
 }
 
