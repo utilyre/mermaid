@@ -27,14 +27,13 @@ impl Vec3 {
         )
     }
 
-    pub fn norm(self) -> Self {
-        assert_ne!(
-            Self::id_add(),
-            self,
-            "cannot normalize a vector with length of zero"
-        );
+    pub fn try_norm(self) -> Option<Self> {
+        (self != Self::id_add()).then(|| self.len().recip() * self)
+    }
 
-        self.len().recip() * self
+    pub fn norm(self) -> Self {
+        self.try_norm()
+            .expect("cannot normalize a vector with length of zero")
     }
 
     pub fn refl(self, base: Self) -> Self {
