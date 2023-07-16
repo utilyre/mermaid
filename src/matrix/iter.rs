@@ -106,7 +106,7 @@ impl<T, const M: usize, const N: usize> IntoIterator for Matrix<T, M, N> {
     type IntoIter = IntoIter<T, M, N>;
 
     fn into_iter(self) -> Self::IntoIter {
-        Self::IntoIter::new(self.into_rows())
+        Self::IntoIter::new(self.take_rows())
     }
 }
 

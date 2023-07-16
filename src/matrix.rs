@@ -29,7 +29,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         array::from_fn(|i| array::from_fn(|j| unsafe { &mut *(&mut self[(i, j)] as *mut T) }))
     }
 
-    pub fn into_rows(self) -> [[T; N]; M] {
+    pub fn take_rows(self) -> [[T; N]; M] {
         self.0
     }
 
@@ -41,7 +41,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         array::from_fn(|j| array::from_fn(|i| unsafe { &mut *(&mut self[(i, j)] as *mut T) }))
     }
 
-    pub fn into_cols(self) -> [[T; M]; N] {
+    pub fn take_cols(self) -> [[T; M]; N] {
         array::from_fn(|j| array::from_fn(|i| unsafe { ptr::read(&self[(i, j)]) }))
     }
 
@@ -135,7 +135,7 @@ impl<T, const M: usize> Matrix<T, M, M> {
         array::from_fn(|i| unsafe { &mut *(&mut self[(i, i)] as *mut T) })
     }
 
-    pub fn into_diag(self) -> [T; M] {
+    pub fn take_diag(self) -> [T; M] {
         array::from_fn(|i| unsafe { ptr::read(&self[(i, i)]) })
     }
 }
@@ -247,9 +247,9 @@ mod tests {
     }
 
     #[test]
-    fn into_cols() {
+    fn take_cols() {
         let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
-        assert_eq!([[5, -5], [-1, 0], [2, -1]], mat.into_cols());
+        assert_eq!([[5, -5], [-1, 0], [2, -1]], mat.take_cols());
     }
 
     #[test]
@@ -338,9 +338,9 @@ mod tests {
     }
 
     #[test]
-    fn into_diag() {
+    fn take_diag() {
         let mat = Matrix::new([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
-        assert_eq!([2, 1, 4], mat.into_diag());
+        assert_eq!([2, 1, 4], mat.take_diag());
     }
 
     #[test]
