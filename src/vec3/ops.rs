@@ -64,7 +64,10 @@ impl PartialOrd for Vec3 {
 
 impl PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
-        *self - *other <= Vec3::splat(f32::EPSILON)
+        let eps = Vec3::splat(f32::EPSILON);
+        let sub = *self - *other;
+
+        -eps <= sub && sub <= eps
     }
 }
 

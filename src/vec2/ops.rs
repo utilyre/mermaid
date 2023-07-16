@@ -60,7 +60,10 @@ impl PartialOrd for Vec2 {
 
 impl PartialEq for Vec2 {
     fn eq(&self, other: &Self) -> bool {
-        *self - *other <= Vec2::splat(f32::EPSILON)
+        let eps = Vec2::splat(f32::EPSILON);
+        let sub = *self - *other;
+
+        -eps <= sub && sub <= eps
     }
 }
 
