@@ -1,6 +1,9 @@
 use super::Vec3;
 use crate::identity::IdAdd;
-use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::{
+    cmp::Ordering,
+    ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
+};
 
 impl Vec3 {
     pub fn len_sq(self) -> f32 {
@@ -49,6 +52,22 @@ impl Vec3 {
     }
 }
 
+impl PartialOrd for Vec3 {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let ox = self.x.partial_cmp(&other.x)?;
+        let oy = self.y.partial_cmp(&other.y)?;
+        let oz = self.z.partial_cmp(&other.z)?;
+
+        (ox == oy && oy == oz).then_some(ox)
+    }
+}
+
+impl PartialEq for Vec3 {
+    fn eq(&self, other: &Self) -> bool {
+        *self - *other <= Vec3::splat(f32::EPSILON)
+    }
+}
+
 impl Index<usize> for Vec3 {
     type Output = f32;
 
@@ -76,22 +95,6 @@ impl IndexMut<usize> for Vec3 {
                 index
             ),
         }
-    }
-}
-
-impl PartialOrd for Vec3 {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        let ox = self.x.partial_cmp(&other.x)?;
-        let oy = self.y.partial_cmp(&other.y)?;
-        let oz = self.z.partial_cmp(&other.z)?;
-
-        (ox == oy && oy == oz).then_some(ox)
-    }
-}
-
-impl PartialEq for Vec3 {
-    fn eq(&self, other: &Self) -> bool {
-        *self - *other <= Vec3::splat(f32::EPSILON)
     }
 }
 

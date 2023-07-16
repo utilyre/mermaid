@@ -49,6 +49,21 @@ impl Vec2 {
     }
 }
 
+impl PartialOrd for Vec2 {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let ox = self.x.partial_cmp(&other.x)?;
+        let oy = self.y.partial_cmp(&other.y)?;
+
+        (ox == oy).then_some(ox)
+    }
+}
+
+impl PartialEq for Vec2 {
+    fn eq(&self, other: &Self) -> bool {
+        *self - *other <= Vec2::splat(f32::EPSILON)
+    }
+}
+
 impl Index<usize> for Vec2 {
     type Output = f32;
 
@@ -74,21 +89,6 @@ impl IndexMut<usize> for Vec2 {
                 index
             ),
         }
-    }
-}
-
-impl PartialOrd for Vec2 {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        let ox = self.x.partial_cmp(&other.x)?;
-        let oy = self.y.partial_cmp(&other.y)?;
-
-        (ox == oy).then_some(ox)
-    }
-}
-
-impl PartialEq for Vec2 {
-    fn eq(&self, other: &Self) -> bool {
-        *self - *other <= Vec2::splat(f32::EPSILON)
     }
 }
 
