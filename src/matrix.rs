@@ -71,7 +71,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     }
 
     pub fn take_col(self, j: usize) -> Option<[T; M]> {
-        (j < N).then(|| array::from_fn::<_, M, _>(|i| unsafe { ptr::read(&self.0[i][j]) }))
+        (j < N).then(|| array::from_fn::<_, M, _>(|i| unsafe { ptr::read(&self[(i, j)]) }))
     }
 
     pub fn get(&self, i: usize, j: usize) -> Option<&T> {
