@@ -1,6 +1,9 @@
 use super::Vec2;
 use crate::identity::IdAdd;
-use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
+use std::{
+    cmp::Ordering,
+    ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign},
+};
 
 impl Vec2 {
     pub fn len_sq(self) -> f32 {
@@ -74,9 +77,18 @@ impl IndexMut<usize> for Vec2 {
     }
 }
 
+impl PartialOrd for Vec2 {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let ox = self.x.partial_cmp(&other.x)?;
+        let oy = self.y.partial_cmp(&other.y)?;
+
+        (ox == oy).then_some(ox)
+    }
+}
+
 impl PartialEq for Vec2 {
     fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
+        *self - *other <= Vec2::splat(f32::EPSILON)
     }
 }
 
@@ -144,7 +156,7 @@ impl Mul<Vec2> for f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::f32::consts as f32;
+    use std::f32::consts;
 
     #[test]
     fn len() {
@@ -157,7 +169,7 @@ mod tests {
         let v1 = Vec2::I;
         let v2 = Vec2::I + Vec2::J;
 
-        assert!((v1.ang(v2) - f32::FRAC_PI_4).abs() <= f32::EPSILON);
+        assert_eq!(consts::FRAC_PI_4, v1.ang(v2));
     }
 
     #[test]
@@ -208,12 +220,7 @@ mod tests {
     #[test]
     fn rotate() {
         let v = Vec2::J;
-
-        let expected = -Vec2::I;
-        let actual = v.rotate(f32::FRAC_PI_2);
-
-        assert!((actual.x - expected.x).abs() <= f32::EPSILON);
-        assert!((actual.y - expected.y).abs() <= f32::EPSILON);
+        assert_eq!(-Vec2::I, v.rotate(consts::FRAC_PI_2));
     }
 
     #[test]

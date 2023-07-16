@@ -79,9 +79,19 @@ impl IndexMut<usize> for Vec3 {
     }
 }
 
+impl PartialOrd for Vec3 {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        let ox = self.x.partial_cmp(&other.x)?;
+        let oy = self.y.partial_cmp(&other.y)?;
+        let oz = self.z.partial_cmp(&other.z)?;
+
+        (ox == oy && oy == oz).then_some(ox)
+    }
+}
+
 impl PartialEq for Vec3 {
     fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y && self.z == other.z
+        *self - *other <= Vec3::splat(f32::EPSILON)
     }
 }
 
