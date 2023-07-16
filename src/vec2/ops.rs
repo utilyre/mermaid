@@ -1,4 +1,5 @@
 use super::Vec2;
+use crate::identity::IdAdd;
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 impl Vec2 {
@@ -19,10 +20,13 @@ impl Vec2 {
     }
 
     pub fn norm(self) -> Self {
-        let len = self.len();
-        assert_ne!(0.0, len, "cannot normalize a vector with length of zero");
+        assert_ne!(
+            Self::id_add(),
+            self,
+            "cannot normalize a vector with length of zero"
+        );
 
-        len.recip() * self
+        self.len().recip() * self
     }
 
     pub fn refl(self, base: Self) -> Self {
