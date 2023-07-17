@@ -42,11 +42,6 @@ impl Vec2 {
     pub fn lerp(self, other: Self, x: f32) -> Self {
         (other - self) * x + self
     }
-
-    pub fn rotate(self, mut angle: f32) -> Self {
-        angle += self.ang(Vec2::I);
-        self.len() * Vec2::new(angle.cos(), angle.sin())
-    }
 }
 
 impl PartialOrd for Vec2 {
@@ -218,12 +213,6 @@ mod tests {
         let v2 = Vec2::new(23.0, 7.0);
 
         assert_eq!(Vec2::new(10.4, 9.8), v1.lerp(v2, 0.3));
-    }
-
-    #[test]
-    fn rotate() {
-        let v = Vec2::J;
-        assert_eq!(-Vec2::I, v.rotate(consts::FRAC_PI_2));
     }
 
     #[test]
