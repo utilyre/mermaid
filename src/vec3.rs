@@ -1,6 +1,7 @@
 use crate::{identity::IdAdd, matrix::Matrix, vec2::Vec2};
 use std::fmt::{self, Display, Formatter};
 
+mod cmp;
 mod ops;
 
 #[derive(Debug, Clone, Copy)]

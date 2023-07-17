@@ -10,6 +10,7 @@ use std::{
 };
 
 pub mod aliases;
+mod cmp;
 pub mod iter;
 mod ops;
 

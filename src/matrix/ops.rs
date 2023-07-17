@@ -88,16 +88,6 @@ impl<T, const M: usize, const N: usize> IndexMut<(usize, usize)> for Matrix<T, M
     }
 }
 
-impl<T, const M: usize, const N: usize> Eq for Matrix<T, M, N> where T: Eq {}
-impl<T, const M: usize, const N: usize> PartialEq for Matrix<T, M, N>
-where
-    T: PartialEq,
-{
-    fn eq(&self, other: &Self) -> bool {
-        self.iter().zip(other.iter()).all(|(x, y)| x == y)
-    }
-}
-
 impl<T, U, V, const M: usize, const N: usize> Add<Matrix<U, M, N>> for Matrix<T, M, N>
 where
     for<'a, 'b> &'a T: Add<&'b U, Output = V>,
