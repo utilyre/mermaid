@@ -182,28 +182,9 @@ impl From<Vec2> for Matrix<f32, 2, 1> {
     }
 }
 
-impl<const N: usize> From<[Vec2; N]> for Matrix<f32, 2, N> {
-    fn from(value: [Vec2; N]) -> Self {
-        Matrix::from_rows([
-            array::from_fn(|i| value[i].x),
-            array::from_fn(|i| value[i].y),
-        ])
-    }
-}
-
 impl From<Vec3> for Matrix<f32, 3, 1> {
     fn from(value: Vec3) -> Self {
         Matrix::from_rows([[value.x], [value.y], [value.z]])
-    }
-}
-
-impl<const N: usize> From<[Vec3; N]> for Matrix<f32, 3, N> {
-    fn from(value: [Vec3; N]) -> Self {
-        Matrix::from_rows([
-            array::from_fn(|i| value[i].x),
-            array::from_fn(|i| value[i].y),
-            array::from_fn(|i| value[i].z),
-        ])
     }
 }
 
