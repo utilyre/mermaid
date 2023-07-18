@@ -217,7 +217,7 @@ mod tests {
     #[test]
     fn from_cols() {
         let mat = Matrix::from_cols([[1, 4], [2, 5], [3, 6]]);
-        assert_eq!(Matrix::from_rows([[1, 2, 3], [4, 5, 6]]), mat)
+        assert_eq!(Matrix::from_rows([[1, 2, 3], [4, 5, 6]]), mat);
     }
 
     #[test]
