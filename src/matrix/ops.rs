@@ -169,7 +169,7 @@ where
     type Output = Matrix<T, 1, 1>;
 
     fn recip(self) -> Self::Output {
-        Self::new([[unsafe { ptr::read(&self[(0, 0)]) }.recip()]])
+        Self::from_rows([[unsafe { ptr::read(&self[(0, 0)]) }.recip()]])
     }
 }
 
@@ -181,7 +181,7 @@ where
     type Output = Self;
 
     fn recip(self) -> Self::Output {
-        Self::new([
+        Self::from_rows([
             [unsafe { ptr::read(&self[(1, 1)]) }, -unsafe {
                 ptr::read(&self[(0, 1)])
             }],
@@ -199,111 +199,111 @@ mod tests {
 
     #[test]
     fn scale() {
-        let mut mat = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
+        let mut mat = Matrix::from_rows([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
 
         assert_eq!(
-            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
+            Matrix::from_rows([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
             mat.clone().scale(5)
         );
 
         mat.scale_mut(5);
         assert_eq!(
-            Matrix::new([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
+            Matrix::from_rows([[40, 30, -5], [0, 35, 10], [20, 20, 25], [-15, -25, 15],]),
             mat
         )
     }
 
     #[test]
     fn pow() {
-        let mat = Matrix::new([[1, 3], [2, -1]]);
-        assert_eq!(Matrix::new([[49, 0], [0, 49]]), mat.pow(3));
+        let mat = Matrix::from_rows([[1, 3], [2, -1]]);
+        assert_eq!(Matrix::from_rows([[49, 0], [0, 49]]), mat.pow(3));
     }
 
     #[test]
     fn det1x1() {
-        let mat = Matrix::new([[-3]]);
+        let mat = Matrix::from_rows([[-3]]);
         assert_eq!(-3, mat.det());
     }
 
     #[test]
     fn det2x2() {
-        let mat = Matrix::new([[5, -1], [8, 2]]);
+        let mat = Matrix::from_rows([[5, -1], [8, 2]]);
         assert_eq!(18, mat.det());
     }
 
     #[test]
     fn det3x3() {
-        let mat = Matrix::new([[0, -1, 2], [3, 2, 1], [-2, -3, 4]]);
+        let mat = Matrix::from_rows([[0, -1, 2], [3, 2, 1], [-2, -3, 4]]);
         assert_eq!(4, mat.det());
     }
 
     #[test]
     fn add() {
-        let mut mat1 = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
-        let mat2 = Matrix::new([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
+        let mut mat1 = Matrix::from_rows([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
+        let mat2 = Matrix::from_rows([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
 
         assert_eq!(
-            Matrix::new([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
+            Matrix::from_rows([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
             mat1.clone() + mat2.clone()
         );
 
         mat1 += mat2;
         assert_eq!(
-            Matrix::new([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
+            Matrix::from_rows([[9, 6, 4], [3, 9, 1], [7, 2, 12], [-1, -5, 11]]),
             mat1
         );
     }
 
     #[test]
     fn sub() {
-        let mut mat1 = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
-        let mat2 = Matrix::new([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
+        let mut mat1 = Matrix::from_rows([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
+        let mat2 = Matrix::from_rows([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
 
         assert_eq!(
-            Matrix::new([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
+            Matrix::from_rows([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
             mat1.clone() - mat2.clone()
         );
 
         mat1 -= mat2;
         assert_eq!(
-            Matrix::new([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
+            Matrix::from_rows([[7, 6, -6], [-3, 5, 3], [1, 6, -2], [-5, -5, -5]]),
             mat1
         );
     }
 
     #[test]
     fn neg() {
-        let mat = Matrix::new([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
+        let mat = Matrix::from_rows([[1, 0, 5], [3, 2, -1], [3, -2, 7], [2, 0, 8]]);
 
         assert_eq!(
-            Matrix::new([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
+            Matrix::from_rows([[-1, 0, -5], [-3, -2, 1], [-3, 2, -7], [-2, 0, -8],]),
             -mat
         );
     }
 
     #[test]
     fn mul() {
-        let mat1 = Matrix::new([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
-        let mat2 = Matrix::new([[3, -1], [2, -3], [-2, 1]]);
+        let mat1 = Matrix::from_rows([[8, 6, -1], [0, 7, 2], [4, 4, 5], [-3, -5, 3]]);
+        let mat2 = Matrix::from_rows([[3, -1], [2, -3], [-2, 1]]);
 
         assert_eq!(
-            Matrix::new([[38, -27], [10, -19], [10, -11], [-25, 21],]),
+            Matrix::from_rows([[38, -27], [10, -19], [10, -11], [-25, 21],]),
             mat1 * mat2
         );
     }
 
     #[test]
     fn recip1x1() {
-        let mat = Matrix::new([[5.0]]);
-        assert_eq!(Matrix::new([[0.2]]), mat.recip());
+        let mat = Matrix::from_rows([[5.0]]);
+        assert_eq!(Matrix::from_rows([[0.2]]), mat.recip());
     }
 
     #[test]
     fn recip2x2() {
-        let mat = Matrix::new([[5.0, 6.0], [-5.0, 2.0]]);
+        let mat = Matrix::from_rows([[5.0, 6.0], [-5.0, 2.0]]);
         assert_eq!(40.0, mat.det());
         assert_eq!(
-            Matrix::new([[0.05, -0.15], [0.125, 0.125]]),
+            Matrix::from_rows([[0.05, -0.15], [0.125, 0.125]]),
             mat.recip()
                 .into_map(|_, _, x| (1000.0_f64 * x).trunc() / 1000.0)
         );

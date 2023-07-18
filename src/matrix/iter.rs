@@ -148,7 +148,7 @@ mod tests {
 
     #[test]
     fn iter() {
-        let mat = Matrix::new([[1, 2], [3, 4], [5, 6]]);
+        let mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.iter();
         assert_eq!(Some(&1), iter.next());
@@ -164,7 +164,7 @@ mod tests {
 
     #[test]
     fn iter_mut() {
-        let mut mat = Matrix::new([[1, 2], [3, 4], [5, 6]]);
+        let mut mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.iter_mut();
         assert_eq!(Some(&mut 1), iter.next());
@@ -180,7 +180,7 @@ mod tests {
 
     #[test]
     fn into_iter() {
-        let mat = Matrix::new([[1, 2], [3, 4], [5, 6]]);
+        let mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.into_iter();
         assert_eq!(Some(1), iter.next());

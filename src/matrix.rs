@@ -18,7 +18,7 @@ mod ops;
 pub struct Matrix<T, const M: usize, const N: usize>([[T; N]; M]);
 
 impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
-    pub const fn new(rows: [[T; N]; M]) -> Self {
+    pub const fn from_rows(rows: [[T; N]; M]) -> Self {
         Self(rows)
     }
 
@@ -94,7 +94,7 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
     where
         F: FnMut(usize, usize, &T) -> U,
     {
-        Matrix::new(array::from_fn(|i| {
+        Matrix::from_rows(array::from_fn(|i| {
             array::from_fn(|j| f(i, j, &self[(i, j)]))
         }))
     }
@@ -146,7 +146,7 @@ where
     T: Default,
 {
     fn default() -> Self {
-        Self::new(array::from_fn(|_| array::from_fn(|_| T::default())))
+        Self::from_rows(array::from_fn(|_| array::from_fn(|_| T::default())))
     }
 }
 
@@ -155,7 +155,7 @@ where
     T: IdAdd,
 {
     fn id_add() -> Self {
-        Self::new(array::from_fn(|_| array::from_fn(|_| T::id_add())))
+        Self::from_rows(array::from_fn(|_| array::from_fn(|_| T::id_add())))
     }
 }
 
@@ -164,7 +164,7 @@ where
     T: IdAdd + IdMul,
 {
     fn id_mul() -> Self {
-        Self::new(array::from_fn(|i| {
+        Self::from_rows(array::from_fn(|i| {
             array::from_fn(|j| if i == j { T::id_mul() } else { T::id_add() })
         }))
     }
@@ -172,13 +172,13 @@ where
 
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
-        Matrix::new([[value.x], [value.y]])
+        Matrix::from_rows([[value.x], [value.y]])
     }
 }
 
 impl<const N: usize> From<[Vec2; N]> for Matrix<f32, 2, N> {
     fn from(value: [Vec2; N]) -> Self {
-        Matrix::new([
+        Matrix::from_rows([
             array::from_fn(|i| value[i].x),
             array::from_fn(|i| value[i].y),
         ])
@@ -187,13 +187,13 @@ impl<const N: usize> From<[Vec2; N]> for Matrix<f32, 2, N> {
 
 impl From<Vec3> for Matrix<f32, 3, 1> {
     fn from(value: Vec3) -> Self {
-        Matrix::new([[value.x], [value.y], [value.z]])
+        Matrix::from_rows([[value.x], [value.y], [value.z]])
     }
 }
 
 impl<const N: usize> From<[Vec3; N]> for Matrix<f32, 3, N> {
     fn from(value: [Vec3; N]) -> Self {
-        Matrix::new([
+        Matrix::from_rows([
             array::from_fn(|i| value[i].x),
             array::from_fn(|i| value[i].y),
             array::from_fn(|i| value[i].z),
@@ -229,7 +229,7 @@ mod tests {
 
     #[test]
     fn rows_mut() {
-        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mut mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         assert_eq!(
             [[&mut 5, &mut -1, &mut 2], [&mut -5, &mut 0, &mut -1]],
@@ -239,7 +239,7 @@ mod tests {
 
     #[test]
     fn cols_mut() {
-        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mut mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         assert_eq!(
             [[&mut 5, &mut -5], [&mut -1, &mut 0], [&mut 2, &mut -1]],
@@ -249,13 +249,13 @@ mod tests {
 
     #[test]
     fn take_cols() {
-        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
         assert_eq!([[5, -5], [-1, 0], [2, -1]], mat.take_cols());
     }
 
     #[test]
     fn row_mut() {
-        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mut mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         let row1 = mat.row_mut(0).unwrap();
         *row1[2] = 8;
@@ -269,7 +269,7 @@ mod tests {
 
     #[test]
     fn take_row() {
-        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         assert_eq!(Some([5, -1, 2]), mat.clone().take_row(0));
         assert_eq!(Some([-5, 0, -1]), mat.clone().take_row(1));
@@ -279,7 +279,7 @@ mod tests {
 
     #[test]
     fn col_mut() {
-        let mut mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mut mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         let col1 = mat.col_mut(0).unwrap();
         *col1[1] = -2;
@@ -297,7 +297,7 @@ mod tests {
 
     #[test]
     fn take_col() {
-        let mat = Matrix::new([[5, -1, 2], [-5, 0, -1]]);
+        let mat = Matrix::from_rows([[5, -1, 2], [-5, 0, -1]]);
 
         assert_eq!(Some([5, -5]), mat.clone().take_col(0));
         assert_eq!(Some([-1, 0]), mat.clone().take_col(1));
@@ -308,7 +308,7 @@ mod tests {
 
     #[test]
     fn take() {
-        let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
+        let mat = Matrix::from_rows([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
 
         assert_eq!(Some(3), mat.clone().take(0, 2));
         assert_eq!(Some(8), mat.clone().take(1, 1));
@@ -319,17 +319,17 @@ mod tests {
 
     #[test]
     fn into_map() {
-        let mat = Matrix::new([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
+        let mat = Matrix::from_rows([[4, -1, 3, 1], [-5, 8, 2, 0], [-3, -2, 1, 1]]);
 
         assert_eq!(
-            Matrix::new([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
+            Matrix::from_rows([[8, -2, 6, 2], [-10, 16, 4, 0], [-6, -4, 2, 2],]),
             mat.into_map(|_, _, x| 2 * x)
         )
     }
 
     #[test]
     fn diag_mut() {
-        let mut mat = Matrix::new([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
+        let mut mat = Matrix::from_rows([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
         let diag = mat.diag_mut();
         *diag[0] = 1;
         *diag[1] = 7;
@@ -340,7 +340,7 @@ mod tests {
 
     #[test]
     fn take_diag() {
-        let mat = Matrix::new([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
+        let mat = Matrix::from_rows([[2, 5, 7], [6, 1, -1], [3, -2, 4]]);
         assert_eq!([2, 1, 4], mat.take_diag());
     }
 
@@ -349,16 +349,16 @@ mod tests {
         let mat3x3 = Matrix::<u32, 3, 3>::id_mul();
         let mat4x4 = Matrix::<u32, 4, 4>::id_mul();
 
-        assert_eq!(Matrix::new([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), mat3x3);
+        assert_eq!(Matrix::from_rows([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), mat3x3);
         assert_eq!(
-            Matrix::new([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+            Matrix::from_rows([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
             mat4x4
         );
     }
 
     #[test]
     fn display() {
-        let mat = Matrix::new([[-1, 0], [2, 87], [-55, 3]]);
+        let mat = Matrix::from_rows([[-1, 0], [2, 87], [-55, 3]]);
 
         assert_eq!(
             "\

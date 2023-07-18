@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn cursor() {
-        let mat = Matrix::new([[1, 2], [3, 4], [5, 6]]);
+        let mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.iter().cursor();
         assert_eq!(Some((0, 0, &1)), iter.next());
