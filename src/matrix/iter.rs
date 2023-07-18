@@ -55,7 +55,14 @@ impl<'a, T, const M: usize, const N: usize> Iterator for Iter<'a, T, M, N> {
 
         Some(self.rows[self.i][j])
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let size = N * (M - self.i) - self.j;
+        (size, Some(size))
+    }
 }
+
+impl<'a, T, const M: usize, const N: usize> ExactSizeIterator for Iter<'a, T, M, N> {}
 
 impl<'a, T, const M: usize, const N: usize> IntoIterator for &'a mut Matrix<T, M, N> {
     type Item = &'a mut T;
@@ -99,7 +106,14 @@ impl<'a, T, const M: usize, const N: usize> Iterator for IterMut<'a, T, M, N> {
 
         Some(unsafe { &mut *(self.rows[self.i][j] as *mut T) })
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let size = N * (M - self.i) - self.j;
+        (size, Some(size))
+    }
 }
+
+impl<'a, T, const M: usize, const N: usize> ExactSizeIterator for IterMut<'a, T, M, N> {}
 
 impl<T, const M: usize, const N: usize> IntoIterator for Matrix<T, M, N> {
     type Item = T;
@@ -140,7 +154,14 @@ impl<T, const M: usize, const N: usize> Iterator for IntoIter<T, M, N> {
 
         Some(unsafe { ptr::read(&self.rows[self.i][j]) })
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let size = N * (M - self.i) - self.j;
+        (size, Some(size))
+    }
 }
+
+impl<T, const M: usize, const N: usize> ExactSizeIterator for IntoIter<T, M, N> {}
 
 #[cfg(test)]
 mod tests {
@@ -151,14 +172,23 @@ mod tests {
         let mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.iter();
+        assert_eq!(6, iter.len());
         assert_eq!(Some(&1), iter.next());
+        assert_eq!(5, iter.len());
         assert_eq!(Some(&2), iter.next());
+        assert_eq!(4, iter.len());
         assert_eq!(Some(&3), iter.next());
+        assert_eq!(3, iter.len());
         assert_eq!(Some(&4), iter.next());
+        assert_eq!(2, iter.len());
         assert_eq!(Some(&5), iter.next());
+        assert_eq!(1, iter.len());
         assert_eq!(Some(&6), iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
     }
 
@@ -167,14 +197,23 @@ mod tests {
         let mut mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.iter_mut();
+        assert_eq!(6, iter.len());
         assert_eq!(Some(&mut 1), iter.next());
+        assert_eq!(5, iter.len());
         assert_eq!(Some(&mut 2), iter.next());
+        assert_eq!(4, iter.len());
         assert_eq!(Some(&mut 3), iter.next());
+        assert_eq!(3, iter.len());
         assert_eq!(Some(&mut 4), iter.next());
+        assert_eq!(2, iter.len());
         assert_eq!(Some(&mut 5), iter.next());
+        assert_eq!(1, iter.len());
         assert_eq!(Some(&mut 6), iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
     }
 
@@ -183,14 +222,23 @@ mod tests {
         let mat = Matrix::from_rows([[1, 2], [3, 4], [5, 6]]);
 
         let mut iter = mat.into_iter();
+        assert_eq!(6, iter.len());
         assert_eq!(Some(1), iter.next());
+        assert_eq!(5, iter.len());
         assert_eq!(Some(2), iter.next());
+        assert_eq!(4, iter.len());
         assert_eq!(Some(3), iter.next());
+        assert_eq!(3, iter.len());
         assert_eq!(Some(4), iter.next());
+        assert_eq!(2, iter.len());
         assert_eq!(Some(5), iter.next());
+        assert_eq!(1, iter.len());
         assert_eq!(Some(6), iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
+        assert_eq!(0, iter.len());
         assert_eq!(None, iter.next());
     }
 }
