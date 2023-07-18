@@ -22,6 +22,12 @@ impl<T, const M: usize, const N: usize> Matrix<T, M, N> {
         Self(rows)
     }
 
+    pub fn from_cols(cols: [[T; M]; N]) -> Self {
+        Self(array::from_fn(|i| {
+            array::from_fn(|j| unsafe { ptr::read(&cols[j][i]) })
+        }))
+    }
+
     pub fn rows(&self) -> [[&T; N]; M] {
         array::from_fn(|i| array::from_fn(|j| &self[(i, j)]))
     }
@@ -226,6 +232,12 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn from_cols() {
+        let mat = Matrix::from_cols([[1, 4], [2, 5], [3, 6]]);
+        assert_eq!(Matrix::from_rows([[1, 2, 3], [4, 5, 6]]), mat)
+    }
 
     #[test]
     fn rows_mut() {
