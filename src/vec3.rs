@@ -47,9 +47,21 @@ impl From<(f32, f32, f32)> for Vec3 {
     }
 }
 
+impl From<Vec3> for (f32, f32, f32) {
+    fn from(value: Vec3) -> Self {
+        (value.x, value.y, value.z)
+    }
+}
+
 impl From<[f32; 3]> for Vec3 {
     fn from(value: [f32; 3]) -> Self {
         Self::new(value[0], value[1], value[2])
+    }
+}
+
+impl From<Vec3> for [f32; 3] {
+    fn from(value: Vec3) -> Self {
+        [value.x, value.y, value.z]
     }
 }
 
@@ -62,18 +74,6 @@ impl From<Vec2> for Vec3 {
 impl From<Matrix<f32, 3, 1>> for Vec3 {
     fn from(value: Matrix<f32, 3, 1>) -> Self {
         Self::new(value[(0, 0)], value[(1, 0)], value[(2, 0)])
-    }
-}
-
-impl From<Vec3> for (f32, f32, f32) {
-    fn from(value: Vec3) -> Self {
-        (value.x, value.y, value.z)
-    }
-}
-
-impl From<Vec3> for [f32; 3] {
-    fn from(value: Vec3) -> Self {
-        [value.x, value.y, value.z]
     }
 }
 
