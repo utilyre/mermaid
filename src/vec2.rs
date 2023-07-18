@@ -53,6 +53,18 @@ impl From<Matrix<f32, 2, 1>> for Vec2 {
     }
 }
 
+impl From<Vec2> for (f32, f32) {
+    fn from(value: Vec2) -> Self {
+        (value.x, value.y)
+    }
+}
+
+impl From<Vec2> for [f32; 2] {
+    fn from(value: Vec2) -> Self {
+        [value.x, value.y]
+    }
+}
+
 impl Display for Vec2 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "({}, {})", self.x, self.y)

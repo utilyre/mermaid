@@ -65,6 +65,18 @@ impl From<Matrix<f32, 3, 1>> for Vec3 {
     }
 }
 
+impl From<Vec3> for (f32, f32, f32) {
+    fn from(value: Vec3) -> Self {
+        (value.x, value.y, value.z)
+    }
+}
+
+impl From<Vec3> for [f32; 3] {
+    fn from(value: Vec3) -> Self {
+        [value.x, value.y, value.z]
+    }
+}
+
 impl Display for Vec3 {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "({}, {}, {})", self.x, self.y, self.z)
