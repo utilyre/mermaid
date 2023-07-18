@@ -3,16 +3,12 @@ use crate::identity::IdAdd;
 use std::ops::{Add, AddAssign, Index, IndexMut, Mul, MulAssign, Neg, Sub, SubAssign};
 
 impl Vec3 {
-    pub fn len_sq(self) -> f32 {
-        self.x.powi(2) + self.y.powi(2) + self.z.powi(2)
-    }
-
     pub fn len(self) -> f32 {
-        self.len_sq().sqrt()
+        self.dot(self).sqrt()
     }
 
     pub fn ang(self, other: Self) -> f32 {
-        (self.dot(other) / (self.len_sq() * other.len_sq()).sqrt()).acos()
+        (self.dot(other) / (self.dot(self) * other.dot(other)).sqrt()).acos()
     }
 
     pub fn dot(self, rhs: Self) -> f32 {
@@ -41,7 +37,7 @@ impl Vec3 {
     }
 
     pub fn proj(self, base: Self) -> Self {
-        (self.dot(base) / base.len_sq()) * base
+        (self.dot(base) / base.dot(base)) * base
     }
 
     pub fn lerp(self, other: Self, x: f32) -> Self {
