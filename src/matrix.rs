@@ -178,13 +178,13 @@ where
 
 impl From<Vec2> for Matrix<f32, 2, 1> {
     fn from(value: Vec2) -> Self {
-        Matrix::from_rows([[value.x], [value.y]])
+        Matrix::from_cols([value.into()])
     }
 }
 
 impl From<Vec3> for Matrix<f32, 3, 1> {
     fn from(value: Vec3) -> Self {
-        Matrix::from_rows([[value.x], [value.y], [value.z]])
+        Matrix::from_cols([value.into()])
     }
 }
 
